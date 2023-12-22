@@ -1,0 +1,43 @@
+# v.1.1.1
+- Se actualizan librerías.
+- Se migra de la versión net5.0 a net7.0.
+
+# v.1.1.0
+- Se agregan las propiedades de sombra "IStatic" y "INotVisible".
+
+# v.1.0.9
+- Se actualizan las clases "UserSession" y "TenantSession" para hacerlas abstractas.
+
+# v.1.0.8
+- Se elimina la clase "AppSession" creemos que debe ser configurado por la app.
+- Se actualizan las clases "UserSession" y "TenantSession" para que reciban el tipo de id.
+
+# v.1.0.7
+- Se agrega la nueva Entities "EntityBaseGuid" para los id de tipo Guid.
+- Se agrega la nueva Entities "EntityBaseGuidSequencial" para los id de tipo Guid secuenciales.
+- Se agrega el nuevo ValueObjects "GuidId" para los id de tipo Guid.
+- Se actualizan librerías.
+
+# v.1.0.6
+- Se actualizan Entities.
+- Se actualizan ShadowProperties.
+
+# v.1.0.5
+- Se agrega el nuevo ValueObjects "TenantName".
+- Se actualiza el ValueObjects "FullName".
+- Se agrega la nueva ShadowProperties "IDefault".
+
+# v.1.0.4
+- Se actualizan los Value Objects.
+
+# v.1.0.3
+- Se migra de la versión netcoreapp3 a net5 y se actualizan librerías.
+
+# v.1.0.2
+- Se actualizan las enumeraciones.
+
+# v.1.0.1
+- Se actualiza la versión de la líbreria Kitpymes.Core.Shared a la versión 1.0.7.
+
+# v.1.0.0
+- Se genera la primera versión del paquete del proyecto.
