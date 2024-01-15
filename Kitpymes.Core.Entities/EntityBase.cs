@@ -8,9 +8,12 @@
 namespace Kitpymes.Core.Entities;
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using Kitpymes.Core.Shared.Extensions;
 using Kitpymes.Core.Shared.Util;
+using MediatR;
 
 /// <summary>
 /// Entidad base.
@@ -36,6 +39,37 @@ public abstract class EntityBase<TKey> : IEquatable<TKey>, IEntityBase
     /// </summary>
     public virtual TKey Id { get; protected set; }
 
+    #region DomainEvents
+
+#pragma warning disable SA1201 // Elements should appear in the correct order
+    private readonly List<INotification> _domainEvents = [];
+#pragma warning restore SA1201 // Elements should appear in the correct order
+
+    /// <summary>
+    /// Obtiene eventos de dominio.
+    /// </summary>
+    [NotMapped]
+    public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
+
+    /// <summary>
+    /// Agrega un evento de dominio.
+    /// </summary>
+    /// <param name="domainEvent">Evento de dominio.</param>
+    protected void AddDomainEvent(INotification domainEvent) => _domainEvents.Add(domainEvent);
+
+    /// <summary>
+    /// Elimina un evento de dominio.
+    /// </summary>
+    /// <param name="domainEvent">Evento de dominio.</param>
+    protected void RemoveDomainEvent(INotification domainEvent) => _domainEvents.Remove(domainEvent);
+
+    /// <summary>
+    /// Elimina todos los eventos de dominio.
+    /// </summary>
+    protected void ClearDomainEvents() => _domainEvents.Clear();
+
+    #endregion DomainEvents
+
     #region Equals
 
     /// <summary>
@@ -44,6 +78,7 @@ public abstract class EntityBase<TKey> : IEquatable<TKey>, IEntityBase
     /// <param name="left">Objeto fuente.</param>
     /// <param name="right">Objeto destino.</param>
     /// <returns>true | false.</returns>
+#pragma warning disable SA1201 // Elements should appear in the correct order
     public static bool operator ==(EntityBase<TKey> left, EntityBase<TKey> right)
     {
         if (left is null && right is null)
@@ -58,6 +93,7 @@ public abstract class EntityBase<TKey> : IEquatable<TKey>, IEntityBase
 
         return left.Equals(right);
     }
+#pragma warning restore SA1201 // Elements should appear in the correct order
 
     /// <summary>
     /// Verifica que dos objetos no son iguales.
