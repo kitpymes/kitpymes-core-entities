@@ -9,7 +9,6 @@ namespace Kitpymes.Core.Entities;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using Kitpymes.Core.Shared.Extensions;
 using Kitpymes.Core.Shared.Util;
@@ -45,28 +44,17 @@ public abstract class EntityBase<TKey> : IEquatable<TKey>, IEntityBase
     private readonly List<INotification> _domainEvents = [];
 #pragma warning restore SA1201 // Elements should appear in the correct order
 
-    /// <summary>
-    /// Obtiene eventos de dominio.
-    /// </summary>
-    [NotMapped]
+    /// <inheritdoc/>
     public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
 
-    /// <summary>
-    /// Agrega un evento de dominio.
-    /// </summary>
-    /// <param name="domainEvent">Evento de dominio.</param>
-    protected void AddDomainEvent(INotification domainEvent) => _domainEvents.Add(domainEvent);
+    /// <inheritdoc/>
+    public void AddDomainEvent(INotification domainEvent) => _domainEvents.Add(domainEvent);
 
-    /// <summary>
-    /// Elimina un evento de dominio.
-    /// </summary>
-    /// <param name="domainEvent">Evento de dominio.</param>
-    protected void RemoveDomainEvent(INotification domainEvent) => _domainEvents.Remove(domainEvent);
+    /// <inheritdoc/>
+    public void RemoveDomainEvent(INotification domainEvent) => _domainEvents.Remove(domainEvent);
 
-    /// <summary>
-    /// Elimina todos los eventos de dominio.
-    /// </summary>
-    protected void ClearDomainEvents() => _domainEvents.Clear();
+    /// <inheritdoc/>
+    public void ClearDomainEvents() => _domainEvents.Clear();
 
     #endregion DomainEvents
 
