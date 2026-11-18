@@ -1,14 +1,14 @@
 ﻿**Entidades base y de sesión, ValueObjects, Shadow Properties y Enumeraciones estaticas**
 
-[![Build Status](https://github.com/kitpymes/template-netcore-entities/workflows/Kitpymes.Core.Entities/badge.svg)](https://github.com/kitpymes/template-netcore-entities/actions) [![NuGet Status](https://img.shields.io/nuget/v/Kitpymes.Core.Entities)](https://www.nuget.org/packages/Kitpymes.Core.Entities/) [![NuGet Download](https://img.shields.io/nuget/dt/Kitpymes.Core.Entities)](https://www.nuget.org/stats/packages/Kitpymes.Core.Entities?groupby=Version) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/kitpymes/template-netcore-entities/blob/master/docs/LICENSE.txt) [![Last Commit](https://img.shields.io/github/last-commit/kitpymes/template-netcore-entities)](https://github.com/kitpymes/template-netcore-entities/) 
+[![Build Status](https://github.com/kitpymes/kitpymes-core-entities/actions/workflows/ci.yml/badge.svg)](https://github.com/kitpymes/kitpymes-core-entities/actions/workflows/ci.yml) [![NuGet Status](https://img.shields.io/nuget/v/Kitpymes.Core.Entities)](https://www.nuget.org/packages/Kitpymes.Core.Entities/) [![NuGet Download](https://img.shields.io/nuget/dt/Kitpymes.Core.Entities)](https://www.nuget.org/stats/packages/Kitpymes.Core.Entities?groupby=Version) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/kitpymes/kitpymes-core-entities/blob/master/docs/LICENSE.txt) [![Last Commit](https://img.shields.io/github/last-commit/kitpymes/kitpymes-core-entities)](https://github.com/kitpymes/kitpymes-core-entities/) 
 
 ## 📋 Requerimientos 
 
-* Visual Studio = 2022
+* Visual Studio 2026 o superior
 
-* NET TargetFramework = net8.0
+* NET TargetFramework = net10.0
 
-* Net Core SDK = 8.0.x
+* SDK de .NET = 10.0.x
 
 * C# = 12
 
@@ -48,7 +48,7 @@ dotnet add package Kitpymes.Core.Entities
 
 ## 📄 Licencia 
 
-* Este proyecto está bajo la Licencia [LICENSE](https://raw.githubusercontent.com/kitpymes/template-netcore-entities/master/docs/LICENSE.txt)
+* Este proyecto está bajo la Licencia [LICENSE](https://raw.githubusercontent.com/kitpymes/kitpymes-core-entities/master/docs/LICENSE.txt)
 
 
 ## 🎁 Gratitud 

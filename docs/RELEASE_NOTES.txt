@@ -1,6 +1,14 @@
+# v.2.0.0
+Versi贸n mayor: requiere .NET 10 y Kitpymes.Core.Shared 2.0.0 (la 煤ltima publicada en NuGet, 1.1.0, era .NET 5).
+
+- Requiere .NET 10 o superior.
+- Usa Kitpymes.Core.Shared 2.0.0 desde NuGet; quien la use debe migrar tambi茅n Shared (ver sus release notes).
+- Incluye lo de la 1.1.1, que no lleg贸 a publicarse: librer铆as actualizadas.
+- El c贸digo pasa a github.com/kitpymes/kitpymes-core-entities y el paquete se publica desde GitHub Actions.
+
 # v.1.1.1
-- Se actualizan librer韆s.
-- Se migra de la versi髇 net5.0 a net7.0.
+- Se actualizan librer铆as.
+- Se migra de la versi贸n net5.0 a net7.0.
 
 # v.1.1.0
 - Se agregan las propiedades de sombra "IStatic" y "INotVisible".
@@ -16,7 +24,7 @@
 - Se agrega la nueva Entities "EntityBaseGuid" para los id de tipo Guid.
 - Se agrega la nueva Entities "EntityBaseGuidSequencial" para los id de tipo Guid secuenciales.
 - Se agrega el nuevo ValueObjects "GuidId" para los id de tipo Guid.
-- Se actualizan librer韆s.
+- Se actualizan librer铆as.
 
 # v.1.0.6
 - Se actualizan Entities.
@@ -31,13 +39,13 @@
 - Se actualizan los Value Objects.
 
 # v.1.0.3
-- Se migra de la versi髇 netcoreapp3 a net5 y se actualizan librer韆s.
+- Se migra de la versi贸n netcoreapp3 a net5 y se actualizan librer铆as.
 
 # v.1.0.2
 - Se actualizan las enumeraciones.
 
 # v.1.0.1
-- Se actualiza la versi髇 de la l韇reria Kitpymes.Core.Shared a la versi髇 1.0.7.
+- Se actualiza la versi贸n de la l铆breria Kitpymes.Core.Shared a la versi贸n 1.0.7.
 
 # v.1.0.0
-- Se genera la primera versi髇 del paquete del proyecto.
+- Se genera la primera versi贸n del paquete del proyecto.
