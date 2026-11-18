@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="Money.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -94,7 +94,7 @@ public sealed class Money : ValueObjectBase
     /// <summary>
     /// Modifica la cantidad de decimales permitidos.
     /// </summary>
-    /// <param name="numbeOfDecimals">N�mero de decimales permitidos.</param>
+    /// <param name="numbeOfDecimals">Número de decimales permitidos.</param>
     /// <returns>Money.</returns>
     [return: NotNull]
     public Money ChangeNumbeOfDecimals(int numbeOfDecimals)

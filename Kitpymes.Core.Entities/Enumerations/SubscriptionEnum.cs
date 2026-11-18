@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+ï»¿// -----------------------------------------------------------------------
 // <copyright file="SubscriptionEnum.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -20,19 +20,19 @@ using Kitpymes.Core.Shared.Extensions;
 /// <list type="bullet">
 ///     <item>
 ///         <term>None = 0</term>
-///         <description>No tiene subscripción</description>
+///         <description>No tiene subscripciÃ³n</description>
 ///     </item>
 ///     <item>
 ///         <term>Free = 1</term>
-///         <description>Subscripción gratis</description>
+///         <description>SubscripciÃ³n gratis</description>
 ///     </item>
 ///     <item>
 ///         <term>Silver = 2</term>
-///         <description>Subscripción plata</description>
+///         <description>SubscripciÃ³n plata</description>
 ///     </item>
 ///     <item>
 ///         <term>Gold = 3</term>
-///         <description>Subscripción oro</description>
+///         <description>SubscripciÃ³n oro</description>
 ///     </item>
 /// </list>
 /// </summary>
@@ -42,25 +42,25 @@ using Kitpymes.Core.Shared.Extensions;
 public class SubscriptionEnum : EnumerationBase
 {
     /// <summary>
-    /// No tiene Subscripción.
+    /// No tiene SubscripciÃ³n.
     /// <para><strong>None</strong> = 0.</para>
     /// </summary>
     public static readonly SubscriptionEnum None = new (0, nameof(None), nameof(None));
 
     /// <summary>
-    /// Subscripción gratis.
+    /// SubscripciÃ³n gratis.
     /// <para><strong>Free</strong> = 1.</para>
     /// </summary>
     public static readonly SubscriptionEnum Free = new (1, nameof(Free), nameof(Free));
 
     /// <summary>
-    /// Subscripción plata.
+    /// SubscripciÃ³n plata.
     /// <para><strong>Silver</strong> = 2.</para>
     /// </summary>
     public static readonly SubscriptionEnum Silver = new (2, nameof(Silver), nameof(Silver));
 
     /// <summary>
-    /// Subscripción oro.
+    /// SubscripciÃ³n oro.
     /// <para><strong>Gold</strong> = 3.</para>
     /// </summary>
     public static readonly SubscriptionEnum Gold = new (3, nameof(Gold), nameof(Gold));
@@ -68,9 +68,9 @@ public class SubscriptionEnum : EnumerationBase
     /// <summary>
     /// Inicializa una nueva instancia de la clase <see cref="SubscriptionEnum"/>.
     /// </summary>
-    /// <param name="id">Id de la subscripción.</param>
-    /// <param name="name">Nombre de la subscripción.</param>
-    /// <param name="shortName">Nombre corto de la subscripción.</param>
+    /// <param name="id">Id de la subscripciÃ³n.</param>
+    /// <param name="name">Nombre de la subscripciÃ³n.</param>
+    /// <param name="shortName">Nombre corto de la subscripciÃ³n.</param>
     public SubscriptionEnum(int id, string name, string shortName)
         : base(id, name, shortName)
     {
@@ -78,22 +78,22 @@ public class SubscriptionEnum : EnumerationBase
     }
 
     /// <summary>
-    /// Obtiene un valor que indica si tiene una subscripción.
+    /// Obtiene un valor que indica si tiene una subscripciÃ³n.
     /// </summary>
     public bool IsNone => Name == None.Name;
 
     /// <summary>
-    /// Obtiene un valor que indica si la subscripción es gratis.
+    /// Obtiene un valor que indica si la subscripciÃ³n es gratis.
     /// </summary>
     public bool IsFree => Name == Free.Name;
 
     /// <summary>
-    /// Obtiene un valor que indica si la subscripción es plata.
+    /// Obtiene un valor que indica si la subscripciÃ³n es plata.
     /// </summary>
     public bool IsSilver => Name == Silver.Name;
 
     /// <summary>
-    /// Obtiene un valor que indica si la subscripción es gold.
+    /// Obtiene un valor que indica si la subscripciÃ³n es gold.
     /// </summary>
     public bool IsGold => Name == Gold.Name;
 }

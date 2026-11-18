@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+ï»¿// -----------------------------------------------------------------------
 // <copyright file="Telephone.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using Kitpymes.Core.Shared.Extensions;
 
 /// <summary>
-/// Objeto de valor para teléfonos.
+/// Objeto de valor para telÃ©fonos.
 /// </summary>
 public sealed class Telephone : ValueObjectBase
 {
@@ -21,12 +21,12 @@ public sealed class Telephone : ValueObjectBase
     => ChangePrefix(prefix).ChangeNumber(number);
 
     /// <summary>
-    /// Obtiene un teléfono vacio.
+    /// Obtiene un telÃ©fono vacio.
     /// </summary>
     public static Telephone Null => new ();
 
     /// <summary>
-    /// Obtiene un valor que indica si el teléfono esta vacio.
+    /// Obtiene un valor que indica si el telÃ©fono esta vacio.
     /// </summary>
     public bool IsNull => Prefix.ToIsNullOrEmpty() || Number.ToIsNullOrEmpty();
 
@@ -36,15 +36,15 @@ public sealed class Telephone : ValueObjectBase
     public string? Prefix { get; private set; }
 
     /// <summary>
-    /// Obtiene el número.
+    /// Obtiene el nÃºmero.
     /// </summary>
     public long? Number { get; private set; }
 
     /// <summary>
-    /// Crea un nuevo télefono.
+    /// Crea un nuevo tÃ©lefono.
     /// </summary>
     /// <param name="prefix">Prefijo del pais.</param>
-    /// <param name="number">Número de télefono.</param>
+    /// <param name="number">NÃºmero de tÃ©lefono.</param>
     /// <returns>Telephone | SharedException.</returns>
     [return: NotNull]
     public static Telephone Create(string? prefix, long number)
@@ -64,9 +64,9 @@ public sealed class Telephone : ValueObjectBase
     }
 
     /// <summary>
-    /// Modifica el número de télefono.
+    /// Modifica el nÃºmero de tÃ©lefono.
     /// </summary>
-    /// <param name="number">Número de télefono.</param>
+    /// <param name="number">NÃºmero de tÃ©lefono.</param>
     /// <returns>Telephone.</returns>
     [return: NotNull]
     public Telephone ChangeNumber(long number)
@@ -77,7 +77,7 @@ public sealed class Telephone : ValueObjectBase
     }
 
     /// <summary>
-    /// Devuelve el télefono completo.
+    /// Devuelve el tÃ©lefono completo.
     /// </summary>
     /// <returns>"{Prefix} {Number}".</returns>
     public override string ToString() => $"{Prefix} {Number}";

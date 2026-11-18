@@ -6,12 +6,6 @@
     <ProjectReference Include="$(SolutionDir)Kitpymes.Core.Entities\Kitpymes.Core.Entities.csproj" />
   </ItemGroup>
 
-  <!-- REEMPLAZAR POR NUGET -->
-  <ItemGroup>
-    <Reference Include="Kitpymes.Core.Shared">
-      <HintPath>..\..\kitpymes-core-shared\Kitpymes.Core.Shared\bin\Debug\net8.0\Kitpymes.Core.Shared.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />

@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+ï»¿// -----------------------------------------------------------------------
 // <copyright file="IAuditedModification.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -8,12 +8,12 @@
 namespace Kitpymes.Core.Entities.ShadowProperties;
 
 /// <summary>
-/// Genere un campo con la fecha de modificación de un registro.
+/// Genere un campo con la fecha de modificaciÃ³n de un registro.
 /// </summary>
 public interface IAuditedModification
 {
     /// <summary>
-    /// Fecha de modificación de un registro.
+    /// Fecha de modificaciÃ³n de un registro.
     /// </summary>
     public const string ModifiedDate = nameof(ModifiedDate);
 

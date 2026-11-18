@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="EntityBaseGuid.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -16,7 +16,7 @@ public abstract class EntityBaseGuid : EntityBase<Guid>
 {
     /// <summary>
     /// Inicializa una nueva instancia de la clase <see cref="EntityBaseGuid"/>.
-    /// Crea una clave autom�tica.
+    /// Crea una clave automática.
     /// </summary>
     protected EntityBaseGuid()
         : base(Guid.NewGuid()) { }

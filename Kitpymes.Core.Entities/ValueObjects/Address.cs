@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+ï»¿// -----------------------------------------------------------------------
 // <copyright file="Address.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -27,12 +27,12 @@ public sealed class Address : ValueObjectBase
                         .ChangeCountry(country);
 
     /// <summary>
-    /// Obtiene una dirección vacia.
+    /// Obtiene una direcciÃ³n vacia.
     /// </summary>
     public static Address Null => new ();
 
     /// <summary>
-    /// Obtiene un valor que indica si la dirección esta vacia.
+    /// Obtiene un valor que indica si la direcciÃ³n esta vacia.
     /// </summary>
     public bool IsNull => Street.ToIsNullOrEmpty()
         || City.ToIsNullOrEmpty()
@@ -41,17 +41,17 @@ public sealed class Address : ValueObjectBase
                     || PostalCode.ToIsNullOrEmpty();
 
     /// <summary>
-    /// Obtiene la dirección.
+    /// Obtiene la direcciÃ³n.
     /// </summary>
     public string? Street { get; private set; }
 
     /// <summary>
-    /// Obtiene el número.
+    /// Obtiene el nÃºmero.
     /// </summary>
     public int? Number { get; private set; }
 
     /// <summary>
-    /// Obtiene el código postal.
+    /// Obtiene el cÃ³digo postal.
     /// </summary>
     public string? PostalCode { get; private set; }
 
@@ -71,11 +71,11 @@ public sealed class Address : ValueObjectBase
     public string? Country { get; private set; }
 
     /// <summary>
-    /// Crea una nueva dirección completa.
+    /// Crea una nueva direcciÃ³n completa.
     /// </summary>
-    /// <param name="street">Dirección.</param>
-    /// <param name="number">Número.</param>
-    /// <param name="postalCode">Código postal.</param>
+    /// <param name="street">DirecciÃ³n.</param>
+    /// <param name="number">NÃºmero.</param>
+    /// <param name="postalCode">CÃ³digo postal.</param>
     /// <param name="city">Ciudad.</param>
     /// <param name="state">Estado.</param>
     /// <param name="country">Pais.</param>
@@ -85,9 +85,9 @@ public sealed class Address : ValueObjectBase
     => new (street, number, postalCode, city, state, country);
 
     /// <summary>
-    /// Modifica la dirección.
+    /// Modifica la direcciÃ³n.
     /// </summary>
-    /// <param name="street">Dirección nueva.</param>
+    /// <param name="street">DirecciÃ³n nueva.</param>
     /// <returns>Address.</returns>
     [return: NotNull]
     public Address ChangeStreet(string? street)
@@ -98,9 +98,9 @@ public sealed class Address : ValueObjectBase
     }
 
     /// <summary>
-    /// Modifica el número de la dirección.
+    /// Modifica el nÃºmero de la direcciÃ³n.
     /// </summary>
-    /// <param name="number">Número nuevo.</param>
+    /// <param name="number">NÃºmero nuevo.</param>
     /// <returns>Address.</returns>
     [return: NotNull]
     public Address ChangeNumber(int number)
@@ -111,9 +111,9 @@ public sealed class Address : ValueObjectBase
     }
 
     /// <summary>
-    /// Modifica el código postal.
+    /// Modifica el cÃ³digo postal.
     /// </summary>
-    /// <param name="postalCode">Código postal nuevo.</param>
+    /// <param name="postalCode">CÃ³digo postal nuevo.</param>
     /// <returns>Address.</returns>
     [return: NotNull]
     public Address ChangePostalCode(string? postalCode)
@@ -163,7 +163,7 @@ public sealed class Address : ValueObjectBase
     }
 
     /// <summary>
-    /// Devuelve la dirección completa.
+    /// Devuelve la direcciÃ³n completa.
     /// </summary>
     /// <returns>"{Street} {Number}, {PostalCode} - {City} {State}, {Country}".</returns>
     public override string ToString() => $"{Street} {Number}, {PostalCode} - {City} {State}, {Country}";

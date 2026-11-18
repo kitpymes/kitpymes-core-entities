@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="EntityBase.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -30,7 +30,7 @@ public abstract class EntityBase<TKey> : IEquatable<TKey>, IEntityBase
     /// <summary>
     /// Inicializa una nueva instancia de la clase <see cref="EntityBase{TKey}"/>.
     /// </summary>
-    /// <param name="key">Clave �nica de una entidad.</param>
+    /// <param name="key">Clave única de una entidad.</param>
     protected EntityBase(TKey key) => Id = key.ToThrowIfNullOrEmpty();
 
     /// <summary>

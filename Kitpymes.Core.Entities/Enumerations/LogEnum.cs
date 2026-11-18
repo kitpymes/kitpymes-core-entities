@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+ï»¿// -----------------------------------------------------------------------
 // <copyright file="LogEnum.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -24,19 +24,19 @@ using Kitpymes.Core.Shared.Extensions;
 ///     </item>
 ///     <item>
 ///         <term>None = 1</term>
-///         <description>No hubo ningún cambio de una entidad</description>
+///         <description>No hubo ningÃºn cambio de una entidad</description>
 ///     </item>
 ///     <item>
 ///         <term>Created = 2</term>
-///         <description>Creación de una entidad</description>
+///         <description>CreaciÃ³n de una entidad</description>
 ///     </item>
 ///     <item>
 ///         <term>Updated = 3</term>
-///         <description>Actualización de una entidad</description>
+///         <description>ActualizaciÃ³n de una entidad</description>
 ///     </item>
 ///     <item>
 ///         <term>Deleted = 4</term>
-///         <description>Eliminación de una entidad</description>
+///         <description>EliminaciÃ³n de una entidad</description>
 ///     </item>
 ///     <item>
 ///         <term>Changed = 5</term>
@@ -56,19 +56,19 @@ public class LogEnum : EnumerationBase
     public static readonly LogEnum None = new (0, nameof(None), nameof(None));
 
     /// <summary>
-    /// Creación.
+    /// CreaciÃ³n.
     /// <para><strong>Created</strong> = 1.</para>
     /// </summary>
     public static readonly LogEnum Created = new (1, nameof(Created), nameof(Created));
 
     /// <summary>
-    /// Actualización.
+    /// ActualizaciÃ³n.
     /// <para><strong>Updated</strong> = 2.</para>
     /// </summary>
     public static readonly LogEnum Updated = new (2, nameof(Updated), nameof(Updated));
 
     /// <summary>
-    /// Eliminación.
+    /// EliminaciÃ³n.
     /// <para><strong>Deleted</strong> = 3.</para>
     /// </summary>
     public static readonly LogEnum Deleted = new (3, nameof(Deleted), nameof(Deleted));

@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+ï»¿// -----------------------------------------------------------------------
 // <copyright file="StatusEnum.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -68,14 +68,14 @@ public class StatusEnum : EnumerationBase
     public bool IsInactive => Name == Inactive.Name;
 
     /// <summary>
-    /// Convierte un booleano en una enumeración.
+    /// Convierte un booleano en una enumeraciÃ³n.
     /// </summary>
     /// <param name="status">Booleano a convertir.</param>
     /// <returns>Status.</returns>
     public static StatusEnum ToEnum(bool status) => status ? Active : Inactive;
 
     /// <summary>
-    /// Convierte un string en una enumeración.
+    /// Convierte un string en una enumeraciÃ³n.
     /// </summary>
     /// <param name="status">String a convertir.</param>
     /// <returns>Status.</returns>

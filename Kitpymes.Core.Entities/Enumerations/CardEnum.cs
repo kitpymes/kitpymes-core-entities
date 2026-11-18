@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+ï»¿// -----------------------------------------------------------------------
 // <copyright file="CardEnum.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -10,13 +10,13 @@ namespace Kitpymes.Core.Entities.Enumerations;
 using Kitpymes.Core.Shared.Extensions;
 
 /*
-    Clase de enumeraciones para las tarjetas de débito o crédito CardEnum
-    Contiene la lista de tarjetas de débito o crédito
+    Clase de enumeraciones para las tarjetas de dÃ©bito o crÃ©dito CardEnum
+    Contiene la lista de tarjetas de dÃ©bito o crÃ©dito
 */
 
 /// <summary>
-/// Clase de enumeraciones para las tarjetas de débito o crédito <c>CardEnum</c>.
-/// Contiene la lista de tarjetas de débito o crédito.
+/// Clase de enumeraciones para las tarjetas de dÃ©bito o crÃ©dito <c>CardEnum</c>.
+/// Contiene la lista de tarjetas de dÃ©bito o crÃ©dito.
 /// <list type="bullet">
 ///     <item>
 ///         <term>None = 0</term>
@@ -37,7 +37,7 @@ using Kitpymes.Core.Shared.Extensions;
 /// </list>
 /// </summary>
 /// <remarks>
-/// <para>En esta clase se pueden agregar todas las tarjetas de débito o crédito.</para>
+/// <para>En esta clase se pueden agregar todas las tarjetas de dÃ©bito o crÃ©dito.</para>
 /// </remarks>
 public class CardEnum : EnumerationBase
 {

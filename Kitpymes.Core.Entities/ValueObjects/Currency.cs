@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+ï»¿// -----------------------------------------------------------------------
 // <copyright file="Currency.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -27,7 +27,7 @@ public sealed class Currency : ValueObjectBase
     private Currency(CodeName code) => ChangeCurrency(code);
 
     /// <summary>
-    /// Un mapeo de códigos de moneda y códigos numéricos ISO 4217.
+    /// Un mapeo de cÃ³digos de moneda y cÃ³digos numÃ©ricos ISO 4217.
     /// Lista: https://es.iban.com/currency-codes.
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:Enumeration items should be documented", Justification = "<pendiente>")]
@@ -64,15 +64,15 @@ public sealed class Currency : ValueObjectBase
         AMD = 051,
 
         /// <summary>
-        /// Florín antillano neerlandés
+        /// FlorÃ­n antillano neerlandÃ©s
         /// </summary>
-        [Description("Florín antillano neerlandés")]
+        [Description("FlorÃ­n antillano neerlandÃ©s")]
         ANG = 532,
 
         /// <summary>
-        /// Kwanza angoleño
+        /// Kwanza angoleÃ±o
         /// </summary>
-        [Description("Kwanza angoleño")]
+        [Description("Kwanza angoleÃ±o")]
         AOA = 973,
 
         /// <summary>
@@ -82,12 +82,12 @@ public sealed class Currency : ValueObjectBase
         ARS = 032,
 
         /// <summary>
-        /// Dólar australiano
+        /// DÃ³lar australiano
         /// </summary>
-        [Description("Dólar australiano")]
+        [Description("DÃ³lar australiano")]
         AUD = 036,
 
-#pragma warning disable CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
+#pragma warning disable CS1591 // Falta el comentario XML para el tipo o miembro visible pÃºblicamente
         AWG = 533,
         AZN = 944,
         BAM = 977,
@@ -128,7 +128,7 @@ public sealed class Currency : ValueObjectBase
         EGP = 818,
         ERN = 232,
         ETB = 230,
-#pragma warning restore CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
+#pragma warning restore CS1591 // Falta el comentario XML para el tipo o miembro visible pÃºblicamente
 
         /// <summary>
         /// Euro
@@ -136,7 +136,7 @@ public sealed class Currency : ValueObjectBase
         [Description("Euro")]
         EUR = 978,
 
-#pragma warning disable CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
+#pragma warning disable CS1591 // Falta el comentario XML para el tipo o miembro visible pÃºblicamente
         FJD = 242,
         FKP = 238,
         GBP = 826,
@@ -236,15 +236,15 @@ public sealed class Currency : ValueObjectBase
         TZS = 834,
         UAH = 980,
         UGX = 800,
-#pragma warning restore CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
+#pragma warning restore CS1591 // Falta el comentario XML para el tipo o miembro visible pÃºblicamente
 
         /// <summary>
-        /// Dólar estadounidense
+        /// DÃ³lar estadounidense
         /// </summary>
-        [Description("Dólar estadounidense")]
+        [Description("DÃ³lar estadounidense")]
         USD = 840,
 
-#pragma warning disable CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
+#pragma warning disable CS1591 // Falta el comentario XML para el tipo o miembro visible pÃºblicamente
         USN = 997,
         UYI = 940,
         UYU = 858,
@@ -274,7 +274,7 @@ public sealed class Currency : ValueObjectBase
         ZAR = 710,
         ZMW = 967,
         ZWL = 932,
-#pragma warning restore CS1591 // Falta el comentario XML para el tipo o miembro visible públicamente
+#pragma warning restore CS1591 // Falta el comentario XML para el tipo o miembro visible pÃºblicamente
     }
 
     /// <summary>
@@ -284,12 +284,12 @@ public sealed class Currency : ValueObjectBase
     public static Currency Default => new ();
 
     /// <summary>
-    /// Obtiene el símbolo del tipo de moneda.
+    /// Obtiene el sÃ­mbolo del tipo de moneda.
     /// </summary>
     public string? Symbol { get; private set; }
 
     /// <summary>
-    /// Obtiene el código del tipo de moneda.
+    /// Obtiene el cÃ³digo del tipo de moneda.
     /// </summary>
     public string? Code { get; private set; }
 
@@ -307,9 +307,9 @@ public sealed class Currency : ValueObjectBase
     public static Currency Create(CodeName code) => new (code);
 
     /// <summary>
-    /// Obtiene la cultura según el código de la monea.
+    /// Obtiene la cultura segÃºn el cÃ³digo de la monea.
     /// </summary>
-    /// <param name="code">Código monea, ej: EUR, USD.</param>
+    /// <param name="code">CÃ³digo monea, ej: EUR, USD.</param>
     /// <returns>CultureInfo.</returns>
     public static CultureInfo? GetCultureInfo(CodeName code)
     => CultureInfo
@@ -342,13 +342,13 @@ public sealed class Currency : ValueObjectBase
     }
 
     /// <summary>
-    /// Devuelve el simbolo: Ej. "€".
+    /// Devuelve el simbolo: Ej. "Â€".
     /// </summary>
     /// <returns>string: Symbol.</returns>
     public override string ToString() => $"{Symbol}";
 
     /// <summary>
-    /// Devuelve el codigo y el simbolo: Ej. "EUR: €".
+    /// Devuelve el codigo y el simbolo: Ej. "EUR: Â€".
     /// </summary>
     /// <returns>string: {Code}: {Symbol}.</returns>
     public string ToFullString() => $"{Code}: {Symbol}";
