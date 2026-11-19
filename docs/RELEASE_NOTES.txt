@@ -1,10 +1,38 @@
 # v.2.0.0
-Versión mayor: requiere .NET 10 y Kitpymes.Core.Shared 2.0.0 (la última publicada en NuGet, 1.1.0, era .NET 5).
+Versión mayor: rompe a quien venga de la 1.1.0 (la última publicada en NuGet, .NET 5). Abajo, qué cambia y cómo migrar.
 
 - Requiere .NET 10 o superior.
-- Usa Kitpymes.Core.Shared 2.0.0 desde NuGet; quien la use debe migrar también Shared (ver sus release notes).
-- Incluye lo de la 1.1.1, que no llegó a publicarse: librerías actualizadas.
+- Usa Kitpymes.Core.Shared 2.0.1; quien la use debe migrar también Shared (ver sus release notes).
+- Nueva dependencia: MediatR (para los eventos de dominio).
+- Incluye lo de la 1.1.1, que no llegó a publicarse.
 - El código pasa a github.com/kitpymes/kitpymes-core-entities y el paquete se publica desde GitHub Actions.
+
+## Cambios incompatibles y cómo migrar desde 1.1.0
+
+1. Espacios de nombres: antes todo estaba en Kitpymes.Core.Entities.
+   - Kitpymes.Core.Entities: EntityBase, EntityBaseInt, EntityBaseLong, EntityBaseGuid, EntityBaseGuidSequencial, EntityBaseString e IEntityBase (nueva).
+   - Kitpymes.Core.Entities.ValueObjects: Address, CodeName, Currency, Email, FullName, Money, Name, Subdomain, Telephone, TenantName y ValueObjectBase.
+   - Kitpymes.Core.Entities.ShadowProperties: IActive, IDefault, IDelete, INotMapped, INotVisible, IRowVersion, IStatic, ITenant y las de auditoría.
+   - Kitpymes.Core.Entities.Enumerations: EnumerationBase y las enumeraciones.
+
+2. Interfaces de auditoría con otro nombre
+   - ICreationAudited -> IAuditedCreation
+   - IModificationAudited -> IAuditedModification
+   - IDeletionAudited -> IAuditedDeletion
+   - IEntityAudited -> IAudited
+   - IEntityFullAudited -> IAuditedFull
+
+3. Enumeraciones
+   - EnumerationBase<TEnum, TValue> y EnumerationBaseInt<TEnum> se sustituyen por EnumerationBase, con identificador int: la propiedad Value pasa a llamarse Id.
+   - GetAll() -> ToAll<T>(); ToEnum(valor) -> ToEnum<T>(id) o ToEnum<T>(nombreOAbreviatura).
+   - CardTypeEnum -> CardEnum, GenderTypeEnum -> GenderEnum, LogTypeEnum -> LogEnum.
+   - CardEnum, GenderEnum, LogEnum y SubscriptionEnum tienen un valor None nuevo.
+
+4. Clases eliminadas
+   - GuidId y StringId: EntityBaseGuid y EntityBaseString ya no tienen el constructor que las recibía: el Id es Guid (o string) y se genera solo con un Guid nuevo.
+   - UserSession y TenantSession: deben definirse en la aplicación.
+
+5. Eventos de dominio (nuevo): EntityBase tiene DomainEvents, AddDomainEvent, RemoveDomainEvent y ClearDomainEvents (con INotification de MediatR).
 
 # v.1.1.1
 - Se actualizan librerías.
