@@ -10,7 +10,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
     {
         #region Create
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.USD, 8)]
@@ -26,21 +26,21 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.AreEqual(numbeOfDecimals, actual.NumbeOfDecimals);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(456, Currency.CodeName.USD, -3)]
         public void Create_Passing_InvalidOrNull_Value_Returns_SharedException(double amount, Currency.CodeName code, int numbeOfDecimals)
         {
             var amountDecimal = Convert.ToDecimal(amount);
             var currency = Currency.Create(code);
 
-            Assert.ThrowsException<SharedException>(() => Money.Create(amountDecimal, currency, numbeOfDecimals));
+            Assert.ThrowsExactly<SharedException>(() => Money.Create(amountDecimal, currency, numbeOfDecimals));
         }
 
         #endregion Create
 
         #region Change
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.EUR, 8)]
@@ -67,7 +67,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         #region ToString
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.USD, 8)]
@@ -87,7 +87,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         #region Equals
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.USD, 8)]
@@ -102,7 +102,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsTrue(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.EUR, 8)]
@@ -117,7 +117,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.USD, 8)]
@@ -134,7 +134,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsTrue(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.EUR, 8)]
@@ -151,7 +151,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.USD, 8)]
@@ -168,7 +168,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(100, Currency.CodeName.EUR, 2)]
         [DataRow(200, Currency.CodeName.EUR, 4)]
         [DataRow(400, Currency.CodeName.EUR, 8)]
