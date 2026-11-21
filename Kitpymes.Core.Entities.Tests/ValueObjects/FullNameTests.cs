@@ -9,7 +9,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
     {
         #region IsNull
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("Tenerife", "San Bartoleme De Tirajana", "Las Palmas")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void IsNull_Passing_Valid_Values_Returns_False(string firstName, string lastName, string middleName)
@@ -35,7 +35,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         #region Create
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas", "España")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void Create_Passing_Valid_Values_Returns_FullName(string firstName, string lastName, string middleName)
@@ -47,12 +47,12 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.AreEqual(middleName, actual.MiddleName);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(null, "Barcelona", "España")]
         [DataRow("", "Sabadell", "España")]
         public void Create_Passing_InvalidOrNull_Value_Returns_SharedException(string firstName, string lastName, string middleName)
         {
-            Assert.ThrowsException<SharedException>(() => FullName.Create(firstName, lastName, middleName));
+            Assert.ThrowsExactly<SharedException>(() => FullName.Create(firstName, lastName, middleName));
         }
 
         #endregion Create
@@ -79,7 +79,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         #region ToString
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas")]
         [DataRow("Sabadell", "Barcelona")]
         public void ToString_Passing_Valid_Values_Returns_Value_String_Format(string firstName, string lastName)
@@ -92,7 +92,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.AreEqual(expected, actual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas", "España")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void ToFullString_Passing_Valid_Values_Returns_Value_String_Format(string firstName, string lastName, string middleName)
@@ -109,7 +109,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         #region Equals
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas", "España")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void Equals_Passing_Valid_Values_Returns_True(string firstName, string lastName, string middleName)
@@ -122,7 +122,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsTrue(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas", "España")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void Equals_Passing_Valid_Distinct_Values_Returns_False(string firstName, string lastName, string middleName)
@@ -135,7 +135,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas", "España")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void OperatorEqual_Passing_Valid_Values_Returns_True(string firstName, string lastName, string middleName)
@@ -148,7 +148,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsTrue(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas", "España")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void OperatorEqual_Passing_Valid_Distinct_Values_Returns_False(string firstName, string lastName, string middleName)
@@ -161,7 +161,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas", "España")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void OperatorNotEqual_Passing_Valid_Values_Returns_False(string firstName, string lastName, string middleName)
@@ -174,7 +174,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("San Bartoleme De Tirajana", "Las Palmas", "España")]
         [DataRow("Sabadell", "Barcelona", "España")]
         public void OperatorNotEqual_Passing_Valid_Values_Returns_True(string firstName, string lastName, string middleName)

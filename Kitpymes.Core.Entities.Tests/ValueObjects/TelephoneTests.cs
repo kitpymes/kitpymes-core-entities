@@ -9,7 +9,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
     {
         #region IsNull
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void IsNull_Passing_Valid_Values_Returns_False(string prefix, long number)
@@ -35,7 +35,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         #region Create
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void Create_Passing_Valid_Values_Returns_Telephone(string prefix, long number)
@@ -46,13 +46,13 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.AreEqual(number, actual.Number);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(null, 43543543543)]
         [DataRow("", 8768768768)]
         [DataRow("4324324", 0)]
         public void Create_Passing_InvalidOrNull_Value_Returns_SharedException(string? prefix, long number)
         {
-            Assert.ThrowsException<SharedException>(() => Telephone.Create(prefix, number));
+            Assert.ThrowsExactly<SharedException>(() => Telephone.Create(prefix, number));
         }
 
         #endregion Create
@@ -76,7 +76,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         #region ToString
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void ToString_Passing_Valid_Values_Returns_Value_String_Format(string prefix, long number)
@@ -93,7 +93,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         #region Equals
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void Equals_Passing_Valid_Values_Returns_True(string prefix, long number)
@@ -106,7 +106,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsTrue(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void Equals_Passing_Valid_Distinct_Values_Returns_False(string prefix, long number)
@@ -119,7 +119,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void OperatorEqual_Passing_Valid_Values_Returns_True(string prefix, long number)
@@ -132,7 +132,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsTrue(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void OperatorEqual_Passing_Valid_Distinct_Values_Returns_False(string prefix, long number)
@@ -145,7 +145,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void OperatorNotEqual_Passing_Valid_Values_Returns_False(string prefix, long number)
@@ -158,7 +158,7 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.IsFalse(isEqual);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("456", 43543543543)]
         [DataRow("D45", 86554654)]
         public void OperatorNotEqual_Passing_Valid_Values_Returns_True(string prefix, long number)
