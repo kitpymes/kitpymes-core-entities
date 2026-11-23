@@ -58,7 +58,7 @@ public abstract class EnumerationBase : IComparable
     /// <param name="left">Left.</param>
     /// <param name="right">Rigth.</param>
     /// <returns>bool.</returns>
-    public static bool operator ==(EnumerationBase left, EnumerationBase right)
+    public static bool operator ==(EnumerationBase? left, EnumerationBase? right)
     {
         if (left is null)
         {
@@ -74,7 +74,7 @@ public abstract class EnumerationBase : IComparable
     /// <param name="left">Left.</param>
     /// <param name="right">Rigth.</param>
     /// <returns>bool.</returns>
-    public static bool operator !=(EnumerationBase left, EnumerationBase right)
+    public static bool operator !=(EnumerationBase? left, EnumerationBase? right)
     => !(left == right);
 
     /// <summary>
@@ -83,7 +83,7 @@ public abstract class EnumerationBase : IComparable
     /// <param name="left">Left.</param>
     /// <param name="right">Rigth.</param>
     /// <returns>bool.</returns>
-    public static bool operator <(EnumerationBase left, EnumerationBase right)
+    public static bool operator <(EnumerationBase? left, EnumerationBase? right)
     => left is null ? right is not null : left.CompareTo(right) < 0;
 
     /// <summary>
@@ -92,7 +92,7 @@ public abstract class EnumerationBase : IComparable
     /// <param name="left">Left.</param>
     /// <param name="right">Rigth.</param>
     /// <returns>bool.</returns>
-    public static bool operator <=(EnumerationBase left, EnumerationBase right)
+    public static bool operator <=(EnumerationBase? left, EnumerationBase? right)
     => left is null || left.CompareTo(right) <= 0;
 
     /// <summary>
@@ -101,7 +101,7 @@ public abstract class EnumerationBase : IComparable
     /// <param name="left">Left.</param>
     /// <param name="right">Rigth.</param>
     /// <returns>bool.</returns>
-    public static bool operator >(EnumerationBase left, EnumerationBase right)
+    public static bool operator >(EnumerationBase? left, EnumerationBase? right)
     => left is not null && left.CompareTo(right) > 0;
 
     /// <summary>
@@ -110,7 +110,7 @@ public abstract class EnumerationBase : IComparable
     /// <param name="left">Left.</param>
     /// <param name="right">Rigth.</param>
     /// <returns>bool.</returns>
-    public static bool operator >=(EnumerationBase left, EnumerationBase right)
+    public static bool operator >=(EnumerationBase? left, EnumerationBase? right)
     => left is null ? right is null : left.CompareTo(right) >= 0;
 
     #endregion Operator
