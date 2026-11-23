@@ -1,5 +1,5 @@
 ﻿using Kitpymes.Core.Entities.ValueObjects;
-using Kitpymes.Core.Shared.Util;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kitpymes.Core.Entities.Tests.ValueObjects
@@ -50,9 +50,9 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
         [DataRow(null, 43543543543)]
         [DataRow("", 8768768768)]
         [DataRow("4324324", 0)]
-        public void Create_Passing_InvalidOrNull_Value_Returns_SharedException(string? prefix, long number)
+        public void Create_Passing_InvalidOrNull_Value_Throws_ArgumentException(string? prefix, long number)
         {
-            Assert.ThrowsExactly<SharedException>(() => Telephone.Create(prefix, number));
+            Assert.Throws<ArgumentException>(() => Telephone.Create(prefix, number));
         }
 
         #endregion Create

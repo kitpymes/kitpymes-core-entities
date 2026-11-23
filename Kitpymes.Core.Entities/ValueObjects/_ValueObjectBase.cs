@@ -8,7 +8,6 @@
 namespace Kitpymes.Core.Entities.ValueObjects;
 
 using Kitpymes.Core.Entities.ShadowProperties;
-using Kitpymes.Core.Shared.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +32,7 @@ public abstract class ValueObjectBase : INotMapped
     /// <param name="left">Objeto fuente.</param>
     /// <param name="right">Objeto destino.</param>
     /// <returns>true | false.</returns>
-    public static bool operator ==(ValueObjectBase left, ValueObjectBase right)
+    public static bool operator ==(ValueObjectBase? left, ValueObjectBase? right)
     {
         if (left is null && right is null)
         {
@@ -54,20 +53,19 @@ public abstract class ValueObjectBase : INotMapped
     /// <param name="left">Objeto fuente.</param>
     /// <param name="right">Objeto destino.</param>
     /// <returns>true | false.</returns>
-    public static bool operator !=(ValueObjectBase left, ValueObjectBase right)
+    public static bool operator !=(ValueObjectBase? left, ValueObjectBase? right)
     => !(left == right);
 
     /// <inheritdoc/>
     public override bool Equals(object? obj)
     {
-        if (obj is null)
+        // Con otro tipo (o nulo) no son iguales: antes de la 3.0.0 se lanzaba una excepción.
+        if (obj is null || GetType() != obj.GetType())
         {
             return false;
         }
 
-        Verify.ToThrowIf($"Invalid comparison of Value Objects of different types: {GetType()} and {obj.GetType()}", () => GetType() != obj.GetType());
-
-        return obj is ValueObjectBase valueObject && GetEqualityComponents().SequenceEqual(valueObject.GetEqualityComponents());
+        return GetEqualityComponents().SequenceEqual(((ValueObjectBase)obj).GetEqualityComponents());
     }
 
     /// <inheritdoc/>

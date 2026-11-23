@@ -1,5 +1,4 @@
 ﻿using Kitpymes.Core.Entities.ValueObjects;
-using Kitpymes.Core.Shared.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
@@ -55,9 +54,9 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
         [DataRow("Tenerife", 23, "34567", "San Bartoleme De Tirajana", "Las Palmas", null)]
         [DataRow(null, 789, "DF7956", "Sabadell", "Barcelona", "España")]
         [DataRow("Tenerife", -10, "DF7956", "Sabadell", "Barcelona", "España")]
-        public void Create_Passing_InvalidOrNull_Value_Returns_SharedException(string street, int number, string postalCode, string city, string state, string country)
+        public void Create_Passing_InvalidOrNull_Value_Throws_ArgumentException(string street, int number, string postalCode, string city, string state, string country)
         {
-            Assert.ThrowsExactly<SharedException>(() => Address.Create(street, number, postalCode, city, state, country));
+            Assert.Throws<ArgumentException>(() => Address.Create(street, number, postalCode, city, state, country));
         }
 
         #endregion Create

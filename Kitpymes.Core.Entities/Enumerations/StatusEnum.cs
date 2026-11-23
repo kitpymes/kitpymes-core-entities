@@ -7,8 +7,8 @@
 
 namespace Kitpymes.Core.Entities.Enumerations;
 
-using Kitpymes.Core.Shared.Extensions;
-using Kitpymes.Core.Shared.Util;
+using System;
+using Kitpymes.Core.Entities.Internal;
 
 /*
    Clase de enumeraciones de estado StatusEnum
@@ -81,7 +81,10 @@ public class StatusEnum : EnumerationBase
     /// <returns>Status.</returns>
     public static StatusEnum ToEnum(string? status)
     {
-        Verify.ToThrowIf($"{nameof(status)} not found.", () => status.ToIsNullOrEmpty() || (status != Active.ToString() && status != Inactive.ToString()));
+        if (status is null || (status != Active.ToString() && status != Inactive.ToString()))
+        {
+            throw new ArgumentException($"{nameof(status)} not found.", nameof(status));
+        }
 
         return status == Active.ToString() ? Active : Inactive;
     }
@@ -90,17 +93,20 @@ public class StatusEnum : EnumerationBase
     /// Convierte un estado en booleano.
     /// </summary>
     /// <param name="status">Nombre del estado.</param>
-    /// <returns>true | false | SharedException.</returns>
+    /// <returns>true | false | ArgumentException.</returns>
     public static bool ToBool(StatusEnum status) => status.ToThrowIfNullOrEmpty().Name == Active.ToString();
 
     /// <summary>
     /// Convierte un estado en booleano.
     /// </summary>
     /// <param name="status">Nombre del estado.</param>
-    /// <returns>true | false | SharedException.</returns>
+    /// <returns>true | false | ArgumentException.</returns>
     public static bool ToBool(string? status)
     {
-        Verify.ToThrowIf($"{nameof(status)} not found.", () => status.ToIsNullOrEmpty() || (status != Active.ToString() && status != Inactive.ToString()));
+        if (status is null || (status != Active.ToString() && status != Inactive.ToString()))
+        {
+            throw new ArgumentException($"{nameof(status)} not found.", nameof(status));
+        }
 
         return status == Active.ToString();
     }

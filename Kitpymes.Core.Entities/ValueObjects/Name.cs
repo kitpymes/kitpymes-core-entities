@@ -9,7 +9,7 @@ namespace Kitpymes.Core.Entities.ValueObjects;
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 
 /// <summary>
 /// Objeto de valor para nombres.
@@ -39,7 +39,7 @@ public sealed class Name : ValueObjectBase
     /// Crea un nuevo nombre.
     /// </summary>
     /// <param name="name">Nombre nuevo.</param>
-    /// <returns>Name | SharedException.</returns>
+    /// <returns>Name | ArgumentException.</returns>
     [return: NotNull]
     public static Name Create(string? name) => new (name);
 

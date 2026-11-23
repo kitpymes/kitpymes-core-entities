@@ -21,6 +21,8 @@
 
 * Conocimientos sobre Inyección de Dependencias
 
+* Sin dependencias de ASP.NET Core ni de Kitpymes.Core.Shared (desde la 3.0.0): se puede usar en proyectos de dominio.
+
 ## 🔧 Instalación 
 
 _Se puede instalar usando el administrador de paquetes Nuget o CLI dotnet._
@@ -42,11 +44,20 @@ dotnet add package Kitpymes.Core.Entities
 ### Entities
 
 ```cs
-public interface IEntityBase { }
+public interface IEntityBase
+{
+    IReadOnlyCollection<INotification> DomainEvents { get; }
+
+    void AddDomainEvent(INotification domainEvent);
+
+    void RemoveDomainEvent(INotification domainEvent);
+
+    void ClearDomainEvents();
+}
 ```
 
 ```cs
-public abstract class EntityBase<TKey> : IEquatable<TKey>, IEntityBase
+public abstract class EntityBase<TKey> : IEquatable<EntityBase<TKey>>, IEntityBase
 {
     protected EntityBase() { }
 
@@ -54,6 +65,39 @@ public abstract class EntityBase<TKey> : IEquatable<TKey>, IEntityBase
 
     public virtual TKey Id { get; protected set; }
 }
+```
+
+- **Igualdad:** dos entidades son iguales si son del mismo tipo y tienen la misma clave. Con tipos distintos, `Equals` devuelve `false`. Una entidad sin clave (valor por defecto de `TKey`, p. ej. todavía sin guardar) sólo es igual a sí misma.
+- **Eventos de dominio:** son `INotification` de [Kitpymes.Core.Mediator.Abstractions](https://www.nuget.org/packages/Kitpymes.Core.Mediator.Abstractions/). Se publican con `IPublisher.PublishAsync`, en el orden en que se añadieron, y después se vacían con `ClearDomainEvents`.
+- `DomainEvents` lleva `[NotMapped]`: no es una columna.
+
+```cs
+public sealed class PedidoCreado(Guid pedidoId) : INotification
+{
+    public Guid PedidoId { get; } = pedidoId;
+}
+
+public sealed class Pedido : EntityBaseGuid
+{
+    public static Pedido Crear()
+    {
+        var pedido = new Pedido();
+        pedido.AddDomainEvent(new PedidoCreado(pedido.Id));
+        return pedido;
+    }
+}
+
+// Al guardar, en la misma transacción:
+foreach (var evento in pedido.DomainEvents)
+{
+    var resultado = await publisher.PublishAsync(evento, cancellationToken);
+    if (resultado.IsFailure)
+    {
+        return resultado;
+    }
+}
+
+pedido.ClearDomainEvents();
 ```
 
 ```cs

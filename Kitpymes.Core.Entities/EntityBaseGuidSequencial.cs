@@ -7,7 +7,7 @@
 
 namespace Kitpymes.Core.Entities;
 
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 using System;
 
 /// <summary>

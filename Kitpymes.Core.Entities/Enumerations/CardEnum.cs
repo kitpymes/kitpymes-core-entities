@@ -7,7 +7,7 @@
 
 namespace Kitpymes.Core.Entities.Enumerations;
 
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 
 /*
     Clase de enumeraciones para las tarjetas de débito o crédito CardEnum

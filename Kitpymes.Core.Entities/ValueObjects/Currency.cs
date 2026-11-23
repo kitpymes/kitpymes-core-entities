@@ -7,7 +7,7 @@
 
 namespace Kitpymes.Core.Entities.ValueObjects;
 
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,9 +20,8 @@ using System.Linq;
 /// </summary>
 public sealed class Currency : ValueObjectBase
 {
-    private Currency()
-        : this((CodeName)Enum.Parse(typeof(CodeName), CultureInfo.CurrentCulture.ThreeLetterISOLanguageName))
-    { }
+    // Para el ORM, que rellena las propiedades después.
+    private Currency() { }
 
     private Currency(CodeName code) => ChangeCurrency(code);
 
@@ -278,10 +277,10 @@ public sealed class Currency : ValueObjectBase
     }
 
     /// <summary>
-    /// Obtiene un simbolo por defecto.
+    /// Obtiene la moneda del país de la cultura actual (<see cref="CultureInfo.CurrentCulture"/>), p. ej. EUR con es-ES.
     /// </summary>
-    /// <returns>Currency | SharedException.</returns>
-    public static Currency Default => new ();
+    /// <exception cref="InvalidOperationException">Si la cultura actual no tiene país (p. ej. la invariante) o su moneda no está en <see cref="CodeName"/>.</exception>
+    public static Currency Default => Create(DefaultCode());
 
     /// <summary>
     /// Obtiene el símbolo del tipo de moneda.
@@ -302,9 +301,29 @@ public sealed class Currency : ValueObjectBase
     /// Crea un dinero.
     /// </summary>
     /// <param name="code">Tipo de moneda.</param>
-    /// <returns>Currency | SharedException.</returns>
+    /// <returns>Currency | ArgumentException.</returns>
     [return: NotNull]
     public static Currency Create(CodeName code) => new (code);
+
+    /// <summary>
+    /// Obtiene el código de moneda del país de la cultura actual.
+    /// </summary>
+    /// <returns>Código de moneda.</returns>
+    /// <exception cref="InvalidOperationException">Si la cultura actual no tiene país o su moneda no está en <see cref="CodeName"/>.</exception>
+    public static CodeName DefaultCode()
+    {
+        var culture = CultureInfo.CurrentCulture;
+
+        if (!culture.IsNeutralCulture
+            && !string.IsNullOrEmpty(culture.Name)
+            && Enum.TryParse(new RegionInfo(culture.Name).ISOCurrencySymbol, false, out CodeName code)
+            && code != CodeName.None)
+        {
+            return code;
+        }
+
+        throw new InvalidOperationException($"No se puede deducir la moneda de la cultura actual ({culture.Name}).");
+    }
 
     /// <summary>
     /// Obtiene la cultura según el código de la monea.

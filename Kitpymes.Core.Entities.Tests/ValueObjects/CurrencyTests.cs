@@ -1,5 +1,4 @@
 ﻿using Kitpymes.Core.Entities.ValueObjects;
-using Kitpymes.Core.Shared.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Globalization;
@@ -26,20 +25,53 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
             Assert.AreEqual(new RegionInfo(cultureInfo.Name).CurrencyNativeName, actual.Name);
         }
 
-        public void Default_Passing_Nothing_Returns_Default_Currency()
+        [TestMethod]
+        [DataRow("es-ES", "EUR")]
+        [DataRow("en-US", "USD")]
+        [DataRow("es-AR", "ARS")]
+        public void Default_Returns_Currency_Of_Current_Culture_Country(string culture, string expected)
         {
-            var expected = CultureInfo.CurrentCulture.ThreeLetterISOLanguageName;
+            var previous = CultureInfo.CurrentCulture;
 
-            var result = Currency.Default;
+            try
+            {
+                CultureInfo.CurrentCulture = new CultureInfo(culture);
 
-            Assert.AreEqual(expected, result.Code);
+                Assert.AreEqual(expected, Currency.Default.Code);
+                Assert.AreEqual(expected, Currency.DefaultCode().ToString());
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = previous;
+            }
+        }
+
+        [TestMethod]
+        [DataRow("")]
+        [DataRow("es")]
+        public void Default_With_Culture_Without_Country_Throws_InvalidOperationException(string culture)
+        {
+            var previous = CultureInfo.CurrentCulture;
+
+            try
+            {
+                CultureInfo.CurrentCulture = culture.Length == 0 ? CultureInfo.InvariantCulture : new CultureInfo(culture);
+
+                var exception = Assert.ThrowsExactly<InvalidOperationException>(() => Currency.Default);
+
+                StringAssert.Contains(exception.Message, $"({CultureInfo.CurrentCulture.Name})");
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = previous;
+            }
         }
 
         [TestMethod]
         [DataRow(null)]
-        public void Create_Passing_InvalidOrNull_Value_Returns_SharedException(Currency.CodeName code)
+        public void Create_Passing_InvalidOrNull_Value_Throws_ArgumentException(Currency.CodeName code)
         {
-            Assert.ThrowsExactly<SharedException>(() => Currency.Create(code));
+            Assert.Throws<ArgumentException>(() => Currency.Create(code));
         }
 
         #endregion Create

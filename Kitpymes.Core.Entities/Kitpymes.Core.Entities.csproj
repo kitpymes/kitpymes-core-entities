@@ -3,12 +3,17 @@
   <Import Project="$(KitpymesRoot)docs/props/Common.Build.props" Condition="Exists('$(KitpymesRoot)docs/props/Common.Build.props')" />
   <Import Project="$(KitpymesRoot)docs/props/Pack.Build.props" Condition="Exists('$(KitpymesRoot)docs/props/Pack.Build.props')" />
 
+  <!-- Desde la 3.0.0, sin Kitpymes.Core.Shared ni el framework de ASP.NET Core (que añade Common.Build.props):
+       Entities es dominio y el dominio no puede depender de ASP.NET Core (architecture.md).
+       Un FrameworkReference pasa a quien consume el paquete; pack-check comprueba que no llega. -->
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <FrameworkReference Remove="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kitpymes.Core.Shared" Version="2.0.1" />
+    <!-- Los eventos de dominio son INotification del mediador propio (antes, de MediatR).
+         PrivateAssets="none": el analizador KPY0003 de Results tiene que llegar a quien usa Entities. -->
+    <PackageReference Include="Kitpymes.Core.Mediator.Abstractions" Version="1.0.1" PrivateAssets="none" />
   </ItemGroup>
 
 </Project>
