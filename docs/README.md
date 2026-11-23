@@ -1,6 +1,6 @@
 ﻿# <img src="https://github.com/kitpymes/kitpymes-core-entities/raw/master/docs/images/logo.png" height="30px"> Kitpymes.Core.Entities
 
-**Entidades base y de sesión, ValueObjects, Shadow Properties y Enumeraciones estaticas**
+**Entidades base con eventos de dominio, ValueObjects, Shadow Properties y Enumeraciones estáticas**
  
 [![Build Status](https://github.com/kitpymes/kitpymes-core-entities/actions/workflows/ci.yml/badge.svg)](https://github.com/kitpymes/kitpymes-core-entities/actions/workflows/ci.yml)
 [![NuGet Status](https://img.shields.io/nuget/v/Kitpymes.Core.Entities)](https://www.nuget.org/packages/Kitpymes.Core.Entities/)
@@ -68,7 +68,7 @@ public abstract class EntityBase<TKey> : IEquatable<EntityBase<TKey>>, IEntityBa
 ```
 
 - **Igualdad:** dos entidades son iguales si son del mismo tipo y tienen la misma clave. Con tipos distintos, `Equals` devuelve `false`. Una entidad sin clave (valor por defecto de `TKey`, p. ej. todavía sin guardar) sólo es igual a sí misma.
-- **Eventos de dominio:** son `INotification` de [Kitpymes.Core.Mediator.Abstractions](https://www.nuget.org/packages/Kitpymes.Core.Mediator.Abstractions/). Se publican con `IPublisher.PublishAsync`, en el orden en que se añadieron, y después se vacían con `ClearDomainEvents`.
+- **Eventos de dominio:** son `INotification` de [Kitpymes.Core.Mediator.Abstractions](https://www.nuget.org/packages/Kitpymes.Core.Mediator.Abstractions/). Se publican uno a uno, en el orden en que se añadieron, con `IPublisher.PublishAsync` (que entrega cada evento a sus manejadores en orden y para en el primero que falla), y después se vacían con `ClearDomainEvents`.
 - `DomainEvents` lleva `[NotMapped]`: no es una columna.
 
 ```cs
@@ -87,8 +87,8 @@ public sealed class Pedido : EntityBaseGuid
     }
 }
 
-// Al guardar, en la misma transacción:
-foreach (var evento in pedido.DomainEvents)
+// Al guardar, en la misma transacción. Se recorre una copia (ToList): un manejador puede añadir eventos nuevos.
+foreach (var evento in pedido.DomainEvents.ToList())
 {
     var resultado = await publisher.PublishAsync(evento, cancellationToken);
     if (resultado.IsFailure)

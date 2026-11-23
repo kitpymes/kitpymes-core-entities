@@ -7,6 +7,9 @@ Versión mayor: rompe a quien venga de la 2.0.0. Abajo, qué cambia y cómo migr
 
 ## Cambios incompatibles y cómo migrar desde 2.0.0
 
+0. Dependencias que ya no llegan por Entities
+   - Si su proyecto usa Kitpymes.Core.Shared, ASP.NET Core o MediatR sólo porque llegaban a través de Entities, deja de compilar. Añada usted la referencia que use: PackageReference Kitpymes.Core.Shared, <FrameworkReference Include="Microsoft.AspNetCore.App" /> o PackageReference MediatR.
+
 1. Eventos de dominio
    - DomainEvents, AddDomainEvent y RemoveDomainEvent usan Kitpymes.Core.Mediator.Abstractions.INotification. Cambie `using MediatR;` por `using Kitpymes.Core.Mediator.Abstractions;` en los eventos y publíquelos con IPublisher.PublishAsync, que devuelve Task<Result>.
    - AddDomainEvent(null) lanza ArgumentNullException (antes añadía un nulo).
@@ -16,7 +19,6 @@ Versión mayor: rompe a quien venga de la 2.0.0. Abajo, qué cambia y cómo migr
    - Donde se lanzaba SharedException ahora se lanza ArgumentNullException (valor nulo), ArgumentOutOfRangeException (número menor que el mínimo o fuera de rango) o ArgumentException (vacío o formato inválido). Todas heredan de ArgumentException: un catch (ArgumentException) las captura todas.
    - El texto es el mismo, y .NET le añade el nombre del argumento: "El campo street es requerido (Parameter 'street')".
    - Con ArgumentException también StatusEnum.ToEnum(string) y ToBool(string) con un estado que no existe, y TenantName con caracteres no permitidos.
-   - Quien quite la referencia a Shared y la usara sólo porque llegaba por Entities tiene que añadirla él mismo.
 
 3. Igualdad de entidades
    - EntityBase<TKey> implementa IEquatable<EntityBase<TKey>> en vez de IEquatable<TKey>: desaparece Equals(TKey), y entidad.Equals(5) ya no compara con la clave. Compare las claves: entidad.Id == 5.
@@ -31,7 +33,7 @@ Versión mayor: rompe a quien venga de la 2.0.0. Abajo, qué cambia y cómo migr
 5. EntityBaseGuidSequencial
    - Las claves salen siempre en orden creciente para SQL Server, también las creadas en el mismo instante: el contador se guarda entre llamadas (antes era una variable local).
 
-6. Operadores == y != de ValueObjectBase aceptan nulos en la firma (ValueObjectBase?), como ya hacían en ejecución.
+6. Los operadores de EntityBase, ValueObjectBase y EnumerationBase aceptan nulos en la firma (por ejemplo ValueObjectBase?), como ya hacían en ejecución. Sólo cambia la anotación de nulos.
 
 # v.2.0.0
 Versión mayor: rompe a quien venga de la 1.1.0 (la última publicada en NuGet, .NET 5). Abajo, qué cambia y cómo migrar.
