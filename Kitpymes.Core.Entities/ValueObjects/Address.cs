@@ -9,7 +9,7 @@ namespace Kitpymes.Core.Entities.ValueObjects;
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 
 /// <summary>
 /// Objeto de valor para las direcciones.
@@ -79,7 +79,7 @@ public sealed class Address : ValueObjectBase
     /// <param name="city">Ciudad.</param>
     /// <param name="state">Estado.</param>
     /// <param name="country">Pais.</param>
-    /// <returns>Address | SharedException.</returns>
+    /// <returns>Address | ArgumentException.</returns>
     [return: NotNull]
     public static Address Create(string street, int number, string postalCode, string city, string state, string country)
     => new (street, number, postalCode, city, state, country);

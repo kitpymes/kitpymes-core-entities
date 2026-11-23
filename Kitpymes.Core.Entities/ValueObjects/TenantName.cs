@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="TenantName.cs" company="Kitpymes">
 // Copyright (c) Kitpymes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project docs folder for full license information.
@@ -7,9 +7,10 @@
 
 namespace Kitpymes.Core.Entities.ValueObjects;
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 
 /// <summary>
 /// Objeto de valor para nombres de tenants.
@@ -39,7 +40,7 @@ public sealed class TenantName : ValueObjectBase
     /// Crea un nuevo nombre.
     /// </summary>
     /// <param name="tenantName">Nombre nuevo.</param>
-    /// <returns>Name | SharedException.</returns>
+    /// <returns>Name | ArgumentException.</returns>
     [return: NotNull]
     public static TenantName Create(string? tenantName) => new (tenantName);
 
@@ -47,7 +48,19 @@ public sealed class TenantName : ValueObjectBase
     /// Modifica el nombre.
     /// </summary>
     /// <param name="tenantName">Nombre nuevo a cambiar.</param>
-    public void Change(string? tenantName) => Value = tenantName.ToThrowIf("Only numbers, letters and underscore are allowed", () => !tenantName.ToIsRegexMatch(@"^[_a-zA-Z0-9]*$"));
+    /// <exception cref="ArgumentNullException">Si el nombre es nulo.</exception>
+    /// <exception cref="ArgumentException">Si está vacío o tiene caracteres que no son letras sin acento, números o guion bajo.</exception>
+    public void Change(string? tenantName)
+    {
+        const string message = "Only numbers, letters and underscore are allowed";
+
+        if (tenantName is null)
+        {
+            throw new ArgumentNullException(nameof(tenantName), message);
+        }
+
+        Value = tenantName.ToIsRegexMatch(@"^[_a-zA-Z0-9]*$") ? tenantName : throw new ArgumentException(message, nameof(tenantName));
+    }
 
     /// <summary>
     /// Devuelve el nombre.

@@ -9,7 +9,7 @@ namespace Kitpymes.Core.Entities.ValueObjects;
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 
 /// <summary>
 /// Objeto de valor para nombres de personas.
@@ -64,7 +64,7 @@ public sealed class FullName : ValueObjectBase
     /// <param name="firstName">Primer nombre.</param>
     /// <param name="lastName">Segundo nombre.</param>
     /// <param name="middleName">Apellido.</param>
-    /// <returns>FullName | SharedException.</returns>
+    /// <returns>FullName | ArgumentException.</returns>
     [return: NotNull]
     public static FullName Create(string? firstName, string? lastName = null, string? middleName = null)
     => new (firstName, lastName, middleName);

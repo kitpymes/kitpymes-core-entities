@@ -14,6 +14,8 @@
 
 * Conocimientos sobre Inyección de Dependencias
 
+* Sin dependencias de ASP.NET Core ni de Kitpymes.Core.Shared (desde la 3.0.0): se puede usar en proyectos de dominio. Los eventos de dominio son `INotification` de Kitpymes.Core.Mediator.Abstractions.
+
 
 ## 🔧 Instalación 
 

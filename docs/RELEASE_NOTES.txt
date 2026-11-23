@@ -1,3 +1,38 @@
+# v.3.0.0
+Versión mayor: rompe a quien venga de la 2.0.0. Abajo, qué cambia y cómo migrar.
+
+- Los eventos de dominio usan INotification de Kitpymes.Core.Mediator.Abstractions 1.0.1 en vez del de MediatR, que deja de ser dependencia (MediatR nuevo tiene licencia comercial).
+- Sin Kitpymes.Core.Shared ni el framework de ASP.NET Core: Entities es dominio y ya no arrastra ASP.NET Core a quien lo usa. Las validaciones que venían de Shared 2.0.1 están copiadas dentro, con las mismas reglas y los mismos mensajes.
+- Llega por Mediator.Abstractions Kitpymes.Core.Results 1.2.0 con su analizador KPY0003 (error si se ignora un Result).
+
+## Cambios incompatibles y cómo migrar desde 2.0.0
+
+1. Eventos de dominio
+   - DomainEvents, AddDomainEvent y RemoveDomainEvent usan Kitpymes.Core.Mediator.Abstractions.INotification. Cambie `using MediatR;` por `using Kitpymes.Core.Mediator.Abstractions;` en los eventos y publíquelos con IPublisher.PublishAsync, que devuelve Task<Result>.
+   - AddDomainEvent(null) lanza ArgumentNullException (antes añadía un nulo).
+   - DomainEvents lleva [NotMapped] en EntityBase; la interfaz IEntityBase ya no lo lleva (en una interfaz no tenía efecto).
+
+2. Excepciones (cambio de comportamiento)
+   - Donde se lanzaba SharedException ahora se lanza ArgumentNullException (valor nulo), ArgumentOutOfRangeException (número menor que el mínimo o fuera de rango) o ArgumentException (vacío o formato inválido). Todas heredan de ArgumentException: un catch (ArgumentException) las captura todas.
+   - El texto es el mismo, y .NET le añade el nombre del argumento: "El campo street es requerido (Parameter 'street')".
+   - Con ArgumentException también StatusEnum.ToEnum(string) y ToBool(string) con un estado que no existe, y TenantName con caracteres no permitidos.
+   - Quien quite la referencia a Shared y la usara sólo porque llegaba por Entities tiene que añadirla él mismo.
+
+3. Igualdad de entidades
+   - EntityBase<TKey> implementa IEquatable<EntityBase<TKey>> en vez de IEquatable<TKey>: desaparece Equals(TKey), y entidad.Equals(5) ya no compara con la clave. Compare las claves: entidad.Id == 5.
+   - Equals con una entidad (o un ValueObject) de otro tipo devuelve false en vez de lanzar una excepción.
+   - Una entidad sin clave (valor por defecto de TKey, p. ej. un EntityBaseInt todavía sin guardar) sólo es igual a sí misma; antes dos entidades nuevas del mismo tipo eran iguales.
+   - GetHashCode distingue mayúsculas en claves string, igual que Equals. Una entidad sin clave usa el hash de la instancia, que cambia cuando recibe la clave: no la meta en un HashSet o como clave de un diccionario antes de guardarla.
+
+4. Currency y Money
+   - Currency.Default y Money.Default devuelven la moneda del país de la cultura actual (EUR con es-ES). Antes lanzaban siempre una excepción. Con una cultura sin país (la invariante, o "es") lanzan InvalidOperationException. Nuevo Currency.DefaultCode().
+   - El constructor sin parámetros (el que usa el ORM al leer de la base de datos) ya no calcula la moneda por defecto.
+
+5. EntityBaseGuidSequencial
+   - Las claves salen siempre en orden creciente para SQL Server, también las creadas en el mismo instante: el contador se guarda entre llamadas (antes era una variable local).
+
+6. Operadores == y != de ValueObjectBase aceptan nulos en la firma (ValueObjectBase?), como ya hacían en ejecución.
+
 # v.2.0.0
 Versión mayor: rompe a quien venga de la 1.1.0 (la última publicada en NuGet, .NET 5). Abajo, qué cambia y cómo migrar.
 

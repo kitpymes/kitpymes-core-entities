@@ -1,5 +1,4 @@
 ﻿using Kitpymes.Core.Entities.ValueObjects;
-using Kitpymes.Core.Shared.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
@@ -28,12 +27,12 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
 
         [TestMethod]
         [DataRow(456, Currency.CodeName.USD, -3)]
-        public void Create_Passing_InvalidOrNull_Value_Returns_SharedException(double amount, Currency.CodeName code, int numbeOfDecimals)
+        public void Create_Passing_InvalidOrNull_Value_Throws_ArgumentException(double amount, Currency.CodeName code, int numbeOfDecimals)
         {
             var amountDecimal = Convert.ToDecimal(amount);
             var currency = Currency.Create(code);
 
-            Assert.ThrowsExactly<SharedException>(() => Money.Create(amountDecimal, currency, numbeOfDecimals));
+            Assert.Throws<ArgumentException>(() => Money.Create(amountDecimal, currency, numbeOfDecimals));
         }
 
         #endregion Create

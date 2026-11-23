@@ -8,7 +8,7 @@
 namespace Kitpymes.Core.Entities.ValueObjects;
 
 using System.Diagnostics.CodeAnalysis;
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 
 /// <summary>
 /// Objeto de valor para teléfonos.
@@ -45,7 +45,7 @@ public sealed class Telephone : ValueObjectBase
     /// </summary>
     /// <param name="prefix">Prefijo del pais.</param>
     /// <param name="number">Número de télefono.</param>
-    /// <returns>Telephone | SharedException.</returns>
+    /// <returns>Telephone | ArgumentException.</returns>
     [return: NotNull]
     public static Telephone Create(string? prefix, long number)
     => new (prefix, number);

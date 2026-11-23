@@ -9,7 +9,7 @@ namespace Kitpymes.Core.Entities.ValueObjects;
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 
 /// <summary>
 /// Objeto de valor para subdominios.
@@ -39,7 +39,7 @@ public sealed class Subdomain : ValueObjectBase
     /// Crea un nuevo nombre.
     /// </summary>
     /// <param name="subdomain">Subdominio nuevo.</param>
-    /// <returns>Subdomain | SharedException.</returns>
+    /// <returns>Subdomain | ArgumentException.</returns>
     [return: NotNull]
     public static Subdomain Create(string? subdomain) => new (subdomain.ToThrowIfNotSubdomain().ToLower());
 

@@ -7,7 +7,7 @@
 
 namespace Kitpymes.Core.Entities.ValueObjects;
 
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -21,9 +21,8 @@ public sealed class Money : ValueObjectBase
     private const decimal DefaultAmount = 0;
     private const int DefaultNumbeOfDecimals = 2;
 
-    private Money()
-        : this(DefaultAmount, Currency.Default, DefaultNumbeOfDecimals)
-    { }
+    // Para el ORM, que rellena las propiedades después.
+    private Money() { }
 
     private Money(decimal amount, Currency currency, int numbeOfDecimals)
     => ChangeNumbeOfDecimals(numbeOfDecimals).ChangeAmount(amount).ChangeCurrency(currency);
@@ -31,7 +30,8 @@ public sealed class Money : ValueObjectBase
     /// <summary>
     /// Obtiene un nuevo dinero con valores por defecto.
     /// </summary>
-    public static Money Default => new ();
+    /// <exception cref="InvalidOperationException">Si no se puede deducir la moneda de la cultura actual (ver <see cref="Currency.Default"/>).</exception>
+    public static Money Default => new (DefaultAmount, Currency.Default, DefaultNumbeOfDecimals);
 
     /// <summary>
     /// Obtiene la cantidad de dinero.
@@ -54,7 +54,7 @@ public sealed class Money : ValueObjectBase
     /// <param name="amount">Cantidad de dinero.</param>
     /// <param name="currency">Tipo de moneda.</param>
     /// <param name="numbeOfDecimals">Cantidad de decimales permitidos.</param>
-    /// <returns>Money | SharedException.</returns>
+    /// <returns>Money | ArgumentException.</returns>
     [return: NotNull]
     public static Money Create(decimal amount, Currency currency, int numbeOfDecimals = DefaultNumbeOfDecimals)
     => new (amount, currency, numbeOfDecimals);
@@ -67,9 +67,9 @@ public sealed class Money : ValueObjectBase
     [return: NotNull]
     public Money ChangeAmount(decimal amount)
     {
-        if (Amount != amount.ToThrowIfNullOrEmpty())
+        if (Amount != amount)
         {
-            Amount = Math.Round(amount.ToThrowIfNullOrEmpty(), NumbeOfDecimals ?? DefaultNumbeOfDecimals);
+            Amount = Math.Round(amount, NumbeOfDecimals ?? DefaultNumbeOfDecimals);
         }
 
         return this;

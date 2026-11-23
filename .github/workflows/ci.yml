@@ -129,8 +129,20 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      # Si la validación de paquete encuentra cambios incompatibles, se repite generando el fichero de
+      # supresiones y se muestra: en una versión mayor, los cambios aceptados van en CompatibilitySuppressions.xml.
       - name: Empaquetar (sin publicar)
-        run: dotnet pack Solution.sln -c Release -o artifacts
+        run: |
+          if ! dotnet pack Solution.sln -c Release -o artifacts; then
+            dotnet pack Kitpymes.Core.Entities/Kitpymes.Core.Entities.csproj -c Release -o /tmp/supresiones -p:ApiCompatGenerateSuppressionFile=true > /dev/null 2>&1 || true
+            find . -name CompatibilitySuppressions.xml -exec cat {} \;
+            exit 1
+          fi
+
+      # Primero se prueba el propio chequeo de dependencias con ficheros falsos: si deja pasar
+      # un nuspec con frameworkReferences o con Shared, no sirve y la pipeline se para.
+      - name: Probar el chequeo de dependencias
+        run: bash .github/scripts/test-check-dependencias.sh
 
       # La validación de paquete no dice nada cuando pasa: se comprueba que se ha descargado la versión
       # de referencia, que sólo se descarga para compararla.
@@ -146,10 +158,54 @@ jobs:
           ls artifacts
           ls artifacts | grep -q -E '^Kitpymes\.Core\.Entities\.[0-9].*\.nupkg$' || { echo "::error::Falta el paquete Kitpymes.Core.Entities."; exit 1; }
           if ls artifacts/*.nupkg | grep -v -E '/Kitpymes\.Core\.Entities\.[0-9]'; then echo "::error::Se ha empaquetado un proyecto que no es Kitpymes.Core.Entities."; exit 1; fi
-          unzip -p artifacts/Kitpymes.Core.Entities.*[0-9].nupkg '*.nuspec'
+          unzip -p artifacts/Kitpymes.Core.Entities.*[0-9].nupkg '*.nuspec' | tee entities.nuspec
+          if grep -q 'id="MediatR' entities.nuspec; then echo "::error::Entities no puede depender de MediatR."; exit 1; fi
+          if grep 'id="Kitpymes.Core.Mediator.Abstractions"' entities.nuspec | grep -q 'Analyzers'; then echo "::error::Entities excluye los analizadores de Mediator.Abstractions: KPY0003 no llegaría."; exit 1; fi
+          # Entities es dominio y no puede depender de ASP.NET Core (architecture.md).
+          chk="$GITHUB_WORKSPACE/.github/scripts/check-dependencias.sh"
+          bash "$chk" nuspec entities.nuspec
+          # Y tampoco a través de las dependencias: un proyecto que sólo referencia el paquete no debe recibir
+          # Microsoft.AspNetCore.App ni Kitpymes.Core.Shared al restaurar. La versión sale del paquete generado;
+          # caché propia y mapeo de orígenes para que Kitpymes.Core.Entities sólo pueda venir del recién empaquetado.
+          ver=$(ls artifacts | grep -oP '^Kitpymes\.Core\.Entities\.\K[0-9][^/]*(?=\.nupkg$)' | grep -v symbols | head -n 1)
+          test -n "$ver" || { echo "::error::No se ha podido leer la versión del paquete."; exit 1; }
+          mkdir -p /tmp/consumidor && cd /tmp/consumidor
+          export NUGET_PACKAGES=/tmp/consumidor/packages
+          dotnet new classlib -f net10.0 -o . --force > /dev/null
+          cat > nuget.config <<XML
+          <configuration>
+            <packageSources>
+              <clear />
+              <add key="local" value="$GITHUB_WORKSPACE/artifacts" />
+              <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+            </packageSources>
+            <packageSourceMapping>
+              <packageSource key="local"><package pattern="Kitpymes.Core.Entities" /></packageSource>
+              <packageSource key="nuget.org"><package pattern="*" /></packageSource>
+            </packageSourceMapping>
+          </configuration>
+          XML
+          dotnet add package Kitpymes.Core.Entities --version "$ver"
+          bash "$chk" assets obj/project.assets.json "Kitpymes.Core.Entities/$ver" "Kitpymes.Core.Mediator.Abstractions/1.0.1" "Kitpymes.Core.Results/1.2.0"
+          if grep -q '"MediatR' obj/project.assets.json; then echo "::error::El consumidor recibe MediatR."; exit 1; fi
+
+      # Prueba con un paquete real que sí trae el problema: Kitpymes.Core.Entities 2.0.0 lleva ASP.NET Core,
+      # Shared y MediatR. Restaurado de nuget.org, el chequeo del consumidor TIENE que fallar.
+      - name: El chequeo del consumidor detecta un paquete real con ASP.NET Core
+        run: |
+          set -o pipefail
+          mkdir -p /tmp/consumidor-malo && cd /tmp/consumidor-malo
+          export NUGET_PACKAGES=/tmp/consumidor-malo/packages
+          dotnet new classlib -f net10.0 -o . --force > /dev/null
+          dotnet add package Kitpymes.Core.Entities --version 2.0.0
+          # Sin "::error::" en la salida: aquí el fallo es lo esperado y no debe salir como error en GitHub.
+          if bash "$GITHUB_WORKSPACE/.github/scripts/check-dependencias.sh" assets obj/project.assets.json "Kitpymes.Core.Entities/2.0.0" | sed 's/::error:://'; then
+            echo "::error::El chequeo no detecta ASP.NET Core ni Shared en Kitpymes.Core.Entities 2.0.0: no sirve."; exit 1
+          fi
+          echo "Detectado, como se esperaba."
 
   # En cada rama, tests de mutación con Stryker.NET: mide si los tests detectan fallos metidos
-  # a propósito. Un mutante que sobrevive es un test que falta. Sin umbral todavía: se fija con la 3.0.0.
+  # a propósito. Un mutante que sobrevive es un test que falta. Para la pipeline por debajo del 80 %.
   mutation:
     if: github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -165,7 +221,7 @@ jobs:
 
       - name: Mutación de Entities
         working-directory: Kitpymes.Core.Entities.Tests
-        run: dotnet stryker --project Kitpymes.Core.Entities.csproj --reporter markdown --reporter json --reporter progress --output ../mutacion/entities
+        run: dotnet stryker --project Kitpymes.Core.Entities.csproj --reporter markdown --reporter json --reporter progress --break-at 80 --output ../mutacion/entities
 
       - name: Resumen
         if: always()

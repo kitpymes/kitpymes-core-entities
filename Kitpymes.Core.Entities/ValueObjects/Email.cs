@@ -9,7 +9,7 @@ namespace Kitpymes.Core.Entities.ValueObjects;
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Kitpymes.Core.Shared.Extensions;
+using Kitpymes.Core.Entities.Internal;
 
 /// <summary>
 /// Objeto de valor para los emails.
@@ -39,7 +39,7 @@ public sealed class Email : ValueObjectBase
     /// Crea un nuevo correo electronico.
     /// </summary>
     /// <param name="email">Correo electronico.</param>
-    /// <returns>Email | SharedException.</returns>
+    /// <returns>Email | ArgumentException.</returns>
     [return: NotNull]
     public static Email Create(string? email) => new (email);
 

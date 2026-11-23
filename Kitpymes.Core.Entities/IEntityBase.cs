@@ -7,35 +7,37 @@
 
 namespace Kitpymes.Core.Entities;
 
-using MediatR;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using Kitpymes.Core.Mediator.Abstractions;
 
 /// <summary>
-/// Interfaz base para las entidades.
+/// Interfaz base para las entidades con eventos de dominio.
 /// </summary>
+/// <remarks>
+/// Los eventos son notificaciones de Kitpymes.Core.Mediator.Abstractions: se publican con
+/// <see cref="IPublisher.PublishAsync"/>, que los entrega en orden y para en el primer manejador que falla.
+/// </remarks>
 public interface IEntityBase
 {
     /// <summary>
-    /// Obtiene eventos de dominio.
+    /// Obtiene los eventos de dominio pendientes de publicar, en el orden en que se añadieron.
     /// </summary>
-    [NotMapped]
-    public IReadOnlyCollection<INotification> DomainEvents { get; }
+    IReadOnlyCollection<INotification> DomainEvents { get; }
 
     /// <summary>
     /// Agrega un evento de dominio.
     /// </summary>
     /// <param name="domainEvent">Evento de dominio.</param>
-    public void AddDomainEvent(INotification domainEvent);
+    void AddDomainEvent(INotification domainEvent);
 
     /// <summary>
     /// Elimina un evento de dominio.
     /// </summary>
     /// <param name="domainEvent">Evento de dominio.</param>
-    public void RemoveDomainEvent(INotification domainEvent);
+    void RemoveDomainEvent(INotification domainEvent);
 
     /// <summary>
     /// Elimina todos los eventos de dominio.
     /// </summary>
-    public void ClearDomainEvents();
+    void ClearDomainEvents();
 }
