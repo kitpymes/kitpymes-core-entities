@@ -65,6 +65,7 @@ namespace Kitpymes.Core.Entities.Tests.Enumerations
             Assert.AreEqual("status", toEnum.ParamName);
             Assert.AreEqual("status", toBool.ParamName);
             StringAssert.StartsWith(toEnum.Message, "status not found.");
+            StringAssert.StartsWith(toBool.Message, "status not found.");
         }
 
         [TestMethod]

@@ -314,11 +314,14 @@ public sealed class Currency : ValueObjectBase
     {
         var culture = CultureInfo.CurrentCulture;
 
-        if (!culture.IsNeutralCulture
-            && !string.IsNullOrEmpty(culture.Name)
-            && Enum.TryParse(new RegionInfo(culture.Name).ISOCurrencySymbol, false, out CodeName code))
+        if (!culture.IsNeutralCulture && !string.IsNullOrEmpty(culture.Name))
         {
-            return code;
+            var symbol = new RegionInfo(culture.Name).ISOCurrencySymbol;
+
+            if (Enum.IsDefined(typeof(CodeName), symbol))
+            {
+                return Enum.Parse<CodeName>(symbol);
+            }
         }
 
         throw new InvalidOperationException($"No se puede deducir la moneda de la cultura actual ({culture.Name}).");
