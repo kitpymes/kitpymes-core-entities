@@ -160,14 +160,15 @@ namespace Kitpymes.Core.Entities.Tests.Enumerations
         public void Operators_Compare_With_Nulls()
         {
             Color? none = null;
+            Color? otherNone = null;
             var red = Color.Red;
 
             var results = new[]
             {
-                none < red, !(none < none), !(red < none),
-                none <= red, none <= none, !(red <= none),
-                !(none > red), !(none > none), red > none,
-                !(none >= red), none >= none, red >= none,
+                none < red, !(none < otherNone), !(red < none),
+                none <= red, none <= otherNone, !(red <= none),
+                !(none > red), !(none > otherNone), red > none,
+                !(none >= red), none >= otherNone, red >= none,
             };
 
             CollectionAssert.DoesNotContain(results, false);
