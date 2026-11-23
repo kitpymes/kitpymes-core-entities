@@ -68,14 +68,114 @@ jobs:
         run: dotnet test Solution.sln --no-build -c Debug --collect:"XPlat Code Coverage" --results-directory cobertura
 
       # Muestra el porcentaje de líneas cubiertas por los tests (informativo: no para la pipeline).
+      # Con varios proyectos de tests hay un informe por proyecto: se unen línea a línea
+      # (una línea cuenta como cubierta si algún proyecto la ejecuta) y se da la cifra por ensamblado.
       - name: Cobertura
+        shell: python
         run: |
-          f=$(find cobertura -name coverage.cobertura.xml | head -n 1)
-          if [ -z "$f" ]; then echo "::warning::No se generó el informe de cobertura."; exit 0; fi
-          rate=$(grep -o 'line-rate="[0-9.]*"' "$f" | head -n 1 | grep -o '[0-9.]*')
-          pct=$(awk -v r="$rate" 'BEGIN { printf "%.1f", r * 100 }')
-          echo "Cobertura de líneas: $pct %"
-          echo "### Cobertura de líneas: $pct %" >> "$GITHUB_STEP_SUMMARY"
+          import glob, os, xml.etree.ElementTree as ET
+          files = glob.glob("cobertura/**/coverage.cobertura.xml", recursive=True)
+          if not files:
+              print("::warning::No se generó el informe de cobertura.")
+              raise SystemExit(0)
+          lines = {}
+          for f in files:
+              root = ET.parse(f).getroot()
+              # Cada informe da las rutas relativas a su propia carpeta <source>: se pasan a absolutas para poder unirlos.
+              sources = [x.text or "" for x in root.iter("source")]
+              base = sources[0] if sources else ""
+              for package in root.iter("package"):
+                  name = package.get("name")
+                  for cls in package.iter("class"):
+                      filename = os.path.normpath(os.path.join(base, cls.get("filename")))
+                      for line in cls.iter("line"):
+                          key = (name, filename, line.get("number"))
+                          lines[key] = lines.get(key, False) or int(line.get("hits", "0")) > 0
+          per = {}
+          for (name, _, _), hit in lines.items():
+              total, covered = per.get(name, (0, 0))
+              per[name] = (total + 1, covered + (1 if hit else 0))
+          total = sum(t for t, _ in per.values())
+          covered = sum(c for _, c in per.values())
+          out = [f"### Cobertura de líneas: {100 * covered / total:.1f} %", ""]
+          out += [f"- {name}: {100 * c / t:.1f} % ({c}/{t})" for name, (t, c) in sorted(per.items())]
+          files_missing = {}
+          for (name, filename, number), hit in lines.items():
+              if not hit:
+                  files_missing.setdefault((name, os.path.basename(filename)), []).append(int(number))
+          out += ["", "Líneas sin cubrir:"]
+          out += [f"- {n} {f}: {sorted(set(v))}" for (n, f), v in sorted(files_missing.items())]
+          print("\n".join(out))
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("\n".join(out) + "\n")
+
+  # En cada rama, empaqueta en Release sin publicar: comprueba que sale sólo el paquete de Entities
+  # y que la validación de paquete se ha ejecutado contra la última versión publicada.
+  pack-check:
+    if: github.ref != 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Empaquetar (sin publicar)
+        run: dotnet pack Solution.sln -c Release -o artifacts
+
+      # La validación de paquete no dice nada cuando pasa: se comprueba que se ha descargado la versión
+      # de referencia, que sólo se descarga para compararla.
+      - name: La validación de paquete se ha ejecutado contra la versión de referencia
+        run: |
+          base=$(grep -oP '(?<=<PackageValidationBaselineVersion>)[^<]+' docs/props/Pack.Build.props || true)
+          if [ -z "$base" ]; then echo "::error::Falta PackageValidationBaselineVersion en Pack.Build.props."; exit 1; fi
+          test -d ~/.nuget/packages/kitpymes.core.entities/$base || { echo "::error::No se ha descargado Kitpymes.Core.Entities $base: la validación de paquete no se ha ejecutado."; exit 1; }
+          echo "Comparado con la $base."
+
+      - name: Comprobar el contenido del paquete
+        run: |
+          ls artifacts
+          ls artifacts | grep -q -E '^Kitpymes\.Core\.Entities\.[0-9].*\.nupkg$' || { echo "::error::Falta el paquete Kitpymes.Core.Entities."; exit 1; }
+          if ls artifacts/*.nupkg | grep -v -E '/Kitpymes\.Core\.Entities\.[0-9]'; then echo "::error::Se ha empaquetado un proyecto que no es Kitpymes.Core.Entities."; exit 1; fi
+          unzip -p artifacts/Kitpymes.Core.Entities.*[0-9].nupkg '*.nuspec'
+
+  # En cada rama, tests de mutación con Stryker.NET: mide si los tests detectan fallos metidos
+  # a propósito. Un mutante que sobrevive es un test que falta. Sin umbral todavía: se fija con la 3.0.0.
+  mutation:
+    if: github.ref != 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Instalar Stryker.NET
+        run: dotnet tool install -g dotnet-stryker --version 5.1.0
+
+      - name: Mutación de Entities
+        working-directory: Kitpymes.Core.Entities.Tests
+        run: dotnet stryker --project Kitpymes.Core.Entities.csproj --reporter markdown --reporter json --reporter progress --output ../mutacion/entities
+
+      - name: Resumen
+        if: always()
+        run: find mutacion -name '*.md' -exec cat {} + | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Mutantes vivos
+        if: always()
+        shell: python
+        run: |
+          import glob, json, os
+          for f in glob.glob("mutacion/**/mutation-report.json", recursive=True):
+              data = json.load(open(f, encoding="utf-8"))
+              for name, file in data["files"].items():
+                  lines = file["source"].split("\n")
+                  for m in file["mutants"]:
+                      if m["status"] in ("Survived", "NoCoverage"):
+                          line = m["location"]["start"]["line"]
+                          print(f"{m['status']}: {os.path.basename(name)}:{line} {m['mutatorName']} -> {m.get('replacement', '')!r} | {lines[line - 1].strip()}")
 
   # En cada rama (lo que luego es un PR) comprueba que nuget.org confía en este repo
   # (política de Trusted Publishing). Sin ella, fusionar un cambio de versión fallaría al

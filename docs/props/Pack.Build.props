@@ -6,7 +6,7 @@
     <When Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
       <PropertyGroup>
         <Version>2.0.0</Version>
-        <ApplicationIcon>$(SolutionDir)docs\images\logo.ico</ApplicationIcon>
+        <ApplicationIcon>$(KitpymesRoot)docs\images\logo.ico</ApplicationIcon>
         <PackageId>$(AssemblyName)</PackageId>
         <Authors>Kitpymes, Sebastian R Ferrari</Authors>
         <Owners>Kitpymes</Owners>
@@ -22,13 +22,16 @@
         <PackageReleaseNotes>https://github.com/kitpymes/kitpymes-core-entities/blob/master/docs/RELEASE_NOTES.txt</PackageReleaseNotes>
         <RepositoryUrl>https://github.com/kitpymes/kitpymes-core-entities</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <!-- Comprueba al empaquetar que esta versión no rompe la API pública de la última publicada. -->
+        <EnablePackageValidation>true</EnablePackageValidation>
+        <PackageValidationBaselineVersion>2.0.0</PackageValidationBaselineVersion>
         <PackageTags>Entities, Value Object, Enumerations, Session, Auditing, Entidades, Objetos de Valor, Enumeraciones, Sesión, Auditorias</PackageTags>
       </PropertyGroup>
     
       <ItemGroup>
-        <None Include="$(SolutionDir)docs\LICENSE.txt" Pack="true" PackagePath="." />
-        <None Include="$(SolutionDir)docs\images\logo.png" Pack="true" PackagePath="." />
-        <None Include="$(SolutionDir)docs\README_NUGET.md" Pack="true" PackagePath="README.md" />
+        <None Include="$(KitpymesRoot)docs\LICENSE.txt" Pack="true" PackagePath="." />
+        <None Include="$(KitpymesRoot)docs\images\logo.png" Pack="true" PackagePath="." />
+        <None Include="$(KitpymesRoot)docs\README_NUGET.md" Pack="true" PackagePath="README.md" />
       </ItemGroup>
   
     </When>
