@@ -10,8 +10,8 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
     [TestClass]
     public class ValueObjectComponentsTests
     {
-        private static Address Address(string street = "Mayor", int number = 1, string postalCode = "03580", string city = "Busot", string state = "Alicante", string country = "España")
-            => ValueObjects.Address.Create(street, number, postalCode, city, state, country);
+        private static Address NewAddress(string street = "Mayor", int number = 1, string postalCode = "03580", string city = "Busot", string state = "Alicante", string country = "España")
+            => Address.Create(street, number, postalCode, city, state, country);
 
         private static void AssertDistinct(ValueObjectBase left, ValueObjectBase right)
         {
@@ -34,27 +34,27 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
         [TestMethod]
         public void Address_Each_Component_Counts()
         {
-            var address = Address();
+            var address = NewAddress();
 
-            Assert.AreEqual(address, Address());
-            AssertDistinct(address, Address(street: "Otra"));
-            AssertDistinct(address, Address(number: 2));
-            AssertDistinct(address, Address(postalCode: "03000"));
-            AssertDistinct(address, Address(city: "Alicante"));
-            AssertDistinct(address, Address(state: "Valencia"));
-            AssertDistinct(address, Address(country: "Italia"));
+            Assert.AreEqual(address, NewAddress());
+            AssertDistinct(address, NewAddress(street: "Otra"));
+            AssertDistinct(address, NewAddress(number: 2));
+            AssertDistinct(address, NewAddress(postalCode: "03000"));
+            AssertDistinct(address, NewAddress(city: "Alicante"));
+            AssertDistinct(address, NewAddress(state: "Valencia"));
+            AssertDistinct(address, NewAddress(country: "Italia"));
         }
 
         [TestMethod]
-        [DataRow(nameof(ValueObjects.Address.Street))]
-        [DataRow(nameof(ValueObjects.Address.PostalCode))]
-        [DataRow(nameof(ValueObjects.Address.City))]
-        [DataRow(nameof(ValueObjects.Address.State))]
-        [DataRow(nameof(ValueObjects.Address.Country))]
+        [DataRow(nameof(Address.Street))]
+        [DataRow(nameof(Address.PostalCode))]
+        [DataRow(nameof(Address.City))]
+        [DataRow(nameof(Address.State))]
+        [DataRow(nameof(Address.Country))]
         public void Address_IsNull_When_Any_Text_Is_Missing(string missing)
         {
             var address = WithProperties(
-                ValueObjects.Address.Null,
+                Address.Null,
                 ("Street", "Mayor"),
                 ("Number", 1),
                 ("PostalCode", "03580"),
@@ -69,10 +69,10 @@ namespace Kitpymes.Core.Entities.Tests.ValueObjects
         [TestMethod]
         public void Address_IsNull_False_When_Complete_And_ToString()
         {
-            var address = Address();
+            var address = NewAddress();
 
             Assert.IsFalse(address.IsNull);
-            Assert.IsTrue(ValueObjects.Address.Null.IsNull);
+            Assert.IsTrue(Address.Null.IsNull);
             Assert.AreEqual("Mayor 1, 03580 - Busot Alicante, España", address.ToString());
         }
 
