@@ -4,6 +4,7 @@ using Kitpymes.Core.Shared.Extensions;
 using Kitpymes.Core.Shared.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Globalization;
 
 namespace Kitpymes.Core.Entities.Tests.Oracle
 {
@@ -147,6 +148,87 @@ namespace Kitpymes.Core.Entities.Tests.Oracle
         public void Address_Required_Like_Shared(string? street, string postalCode)
         {
             AssertSameRejection(street, () => Address.Create(street!, 1, postalCode, "Busot", "Alicante", "España"), () => street.ToThrowIfNullOrEmpty("street"), "street");
+        }
+
+        [TestMethod]
+        [DataRow("postalCode", null)]
+        [DataRow("postalCode", " ")]
+        [DataRow("city", null)]
+        [DataRow("city", "")]
+        [DataRow("state", null)]
+        [DataRow("state", " ")]
+        [DataRow("country", null)]
+        [DataRow("country", "")]
+        public void Address_Other_Fields_Required_Like_Shared(string field, string? value)
+        {
+            var address = Address.Create("Mayor", 1, "03580", "Busot", "Alicante", "España");
+            Action change = field switch
+            {
+                "postalCode" => () => address.ChangePostalCode(value),
+                "city" => () => address.ChangeCity(value),
+                "state" => () => address.ChangeState(value),
+                _ => () => address.ChangeCountry(value),
+            };
+
+            AssertSameRejection(value, change, () => value.ToThrowIfNullOrEmpty(field), field);
+        }
+
+        [TestMethod]
+        [DataRow("Ana1")]
+        [DataRow("")]
+        [DataRow(null)]
+        public void FullName_Last_And_Middle_Like_Shared(string? name)
+        {
+            var fullName = FullName.Create("Ana");
+
+            AssertSameRejection(name, () => fullName.ChangeLastName(name), () => name.ToThrowIfNotName("lastName"), "lastName");
+            AssertSameRejection(name, () => fullName.ChangeMiddleName(name), () => name.ToThrowIfNotName("middleName"), "middleName");
+        }
+
+        [TestMethod]
+        [DataRow(-1L)]
+        [DataRow(0L)]
+        [DataRow(1L)]
+        [DataRow(long.MaxValue)]
+        public void Telephone_Number_Accepted_And_Rejected_Like_Shared(long number)
+        {
+            if (number.ToIsLess(1))
+            {
+                Assert.Throws<ArgumentOutOfRangeException>(() => Telephone.Create("34", number));
+            }
+            else
+            {
+                Assert.AreEqual(number, Telephone.Create("34", number).Number);
+            }
+        }
+
+        [TestMethod]
+        [DataRow(-2)]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(3)]
+        [DataRow(4)]
+        [DataRow(int.MaxValue)]
+        public void Enumeration_Id_Accepted_And_Rejected_Like_Shared(int id)
+        {
+            if (id.ToIsOutRange(0, 3))
+            {
+                Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = new CardEnum(id, "x", "x"));
+            }
+            else
+            {
+                Assert.AreEqual(id, new CardEnum(id, "x", "x").Id);
+            }
+        }
+
+        [TestMethod]
+        public void Currency_Without_Culture_Like_Shared()
+        {
+            CultureInfo? none = Currency.GetCultureInfo(Currency.CodeName.None);
+
+            Assert.IsNull(none);
+            AssertSameRejection<ArgumentNullException>(() => Currency.Create(Currency.CodeName.None), () => none.ToThrowIfNullOrEmpty("GetCultureInfo(codeString)"), "GetCultureInfo(codeString)");
         }
 
         [TestMethod]

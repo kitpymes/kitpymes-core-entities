@@ -335,7 +335,10 @@ public sealed class Currency : ValueObjectBase
     public static CultureInfo? GetCultureInfo(CodeName code)
     => CultureInfo
         .GetCultures(CultureTypes.SpecificCultures)
-            .FirstOrDefault(culture => new RegionInfo(culture.Name).ISOCurrencySymbol == code.ToString());
+            // Sin datos de globalización (DOTNET_SYSTEM_GLOBALIZATION_INVARIANT) sólo está la invariante, sin nombre:
+            // RegionInfo("") lanzaría. Se descarta y se devuelve null, como en la 2.0.0.
+            .Where(c => !c.IsNeutralCulture && !string.IsNullOrWhiteSpace(c.Name))
+                .FirstOrDefault(culture => new RegionInfo(culture.Name).ISOCurrencySymbol == code.ToString());
 
     /// <summary>
     /// Modifica el tipo de moneda.

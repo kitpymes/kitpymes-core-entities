@@ -14,8 +14,9 @@ using Kitpymes.Core.Mediator.Abstractions;
 /// Interfaz base para las entidades con eventos de dominio.
 /// </summary>
 /// <remarks>
-/// Los eventos son notificaciones de Kitpymes.Core.Mediator.Abstractions: se publican con
-/// <see cref="IPublisher.PublishAsync"/>, que los entrega en orden y para en el primer manejador que falla.
+/// Los eventos son notificaciones de Kitpymes.Core.Mediator.Abstractions: se publican uno a uno, en el orden de
+/// <see cref="DomainEvents"/>, con <see cref="IPublisher.PublishAsync"/>, que entrega cada evento a sus manejadores
+/// en orden y para en el primero que falla.
 /// </remarks>
 public interface IEntityBase
 {
