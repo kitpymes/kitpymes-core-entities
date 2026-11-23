@@ -83,10 +83,7 @@ public sealed class Money : ValueObjectBase
     [return: NotNull]
     public Money ChangeCurrency(Currency currency)
     {
-        if (Currency is null || Currency != currency)
-        {
-            Currency = currency;
-        }
+        Currency = currency;
 
         return this;
     }

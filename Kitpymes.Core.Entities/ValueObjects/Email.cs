@@ -59,7 +59,7 @@ public sealed class Email : ValueObjectBase
     /// Normaliza el email.
     /// </summary>
     /// <returns>string | null.</returns>
-    public string? ToNormalize() => Value.ToReplaceSpecialChars("@");
+    public string? ToNormalize() => Value.ToReplaceSpecialChars(keepAt: true);
 
     /// <inheritdoc/>
     protected override IEnumerable<object?> GetEqualityComponents()

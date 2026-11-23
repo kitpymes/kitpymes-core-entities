@@ -316,8 +316,7 @@ public sealed class Currency : ValueObjectBase
 
         if (!culture.IsNeutralCulture
             && !string.IsNullOrEmpty(culture.Name)
-            && Enum.TryParse(new RegionInfo(culture.Name).ISOCurrencySymbol, false, out CodeName code)
-            && code != CodeName.None)
+            && Enum.TryParse(new RegionInfo(culture.Name).ISOCurrencySymbol, false, out CodeName code))
         {
             return code;
         }
@@ -333,8 +332,7 @@ public sealed class Currency : ValueObjectBase
     public static CultureInfo? GetCultureInfo(CodeName code)
     => CultureInfo
         .GetCultures(CultureTypes.SpecificCultures)
-            .Where(c => !c.IsNeutralCulture && !string.IsNullOrWhiteSpace(c.Name))
-                .FirstOrDefault(culture => new RegionInfo(culture.Name).ISOCurrencySymbol == code.ToString());
+            .FirstOrDefault(culture => new RegionInfo(culture.Name).ISOCurrencySymbol == code.ToString());
 
     /// <summary>
     /// Modifica el tipo de moneda.
@@ -375,8 +373,7 @@ public sealed class Currency : ValueObjectBase
     /// <inheritdoc/>
     protected override IEnumerable<object?> GetEqualityComponents()
     {
-        yield return Symbol;
+        // Símbolo y nombre salen del código: basta con el código.
         yield return Code;
-        yield return Name;
     }
 }

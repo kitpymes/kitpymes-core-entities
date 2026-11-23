@@ -35,6 +35,13 @@ namespace Kitpymes.Core.Entities.Tests.Entities
 
         private sealed class Order : EntityBaseGuid { }
 
+        private sealed class Payment : EntityBaseLong
+        {
+            public Payment() { }
+
+            public Payment(long id) : base(id) { }
+        }
+
         private sealed class Invoice : EntityBaseGuidSequencial { }
 
         private sealed class Note : EntityBaseString { }
@@ -81,6 +88,8 @@ namespace Kitpymes.Core.Entities.Tests.Entities
         public void Constructor_Without_Key_Leaves_Default_Id()
         {
             Assert.AreEqual(0, new Customer().Id);
+            Assert.AreEqual(0L, new Payment().Id);
+            Assert.AreEqual(9_000_000_000L, new Payment(9_000_000_000L).Id);
         }
 
         [TestMethod]

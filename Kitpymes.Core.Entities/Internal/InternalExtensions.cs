@@ -10,6 +10,7 @@ namespace Kitpymes.Core.Entities.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Buffers.Binary;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -186,34 +187,20 @@ internal static class InternalExtensions
     /// <summary>
     /// Sustituye las letras acentuadas por la letra sin acento y quita el resto de caracteres especiales.
     /// </summary>
+    /// <remarks>Shared admitía cualquier lista de caracteres a conservar; Entities sólo conserva la arroba (Email).</remarks>
     /// <param name="input">Cadena de entrada.</param>
-    /// <param name="ignoreSpecialChars">Caracteres especiales que no se quitan.</param>
+    /// <param name="keepAt">Si se conserva la arroba.</param>
     /// <returns>La cadena sin caracteres especiales.</returns>
-    internal static string? ToReplaceSpecialChars(this string? input, params string[] ignoreSpecialChars)
+    internal static string? ToReplaceSpecialChars(this string? input, bool keepAt = false)
     {
         if (string.IsNullOrWhiteSpace(input))
         {
             return input;
         }
 
-        var pattern = "[^0-9a-zA-Z ";
-
-        foreach (var ch in ignoreSpecialChars.SelectMany(c => c))
-        {
-            // Dentro de una clase [...] hay que escapar los caracteres que ahí tienen significado.
-            if (ch is '\\' or ']' or '[' or '^' or '-')
-            {
-                pattern += '\\';
-            }
-
-            pattern += ch;
-        }
-
-        pattern += "]+?";
-
         input = SpecialChars.Keys.Aggregate(input, (x, y) => SpecialChars[y].Aggregate(x, (z, c) => z.Replace(c, y)));
 
-        return new Regex(pattern, RegexOptions.None, RegexTimeout).Replace(input, string.Empty);
+        return Regex.Replace(input, keepAt ? "[^0-9a-zA-Z @]+?" : "[^0-9a-zA-Z ]+?", string.Empty, RegexOptions.None, RegexTimeout);
     }
 
     /// <summary>
@@ -231,12 +218,9 @@ internal static class InternalExtensions
     /// <returns>Guid secuencial.</returns>
     internal static Guid ToSecuencial(this Guid input)
     {
-        var counterBytes = BitConverter.GetBytes(NextSequentialCounter());
+        var counterBytes = new byte[8];
 
-        if (!BitConverter.IsLittleEndian)
-        {
-            Array.Reverse(counterBytes);
-        }
+        BinaryPrimitives.WriteInt64LittleEndian(counterBytes, NextSequentialCounter());
 
         return input.WithCounter(counterBytes);
     }
@@ -305,7 +289,8 @@ internal static class InternalExtensions
     }
 
     /// <summary>
-    /// Mensajes de Shared 2.0.1 (recurso en español).
+    /// Mensajes de Shared 2.0.1 (recurso en español), con nombre de campo: el nombre siempre llega
+    /// (CallerArgumentExpression), así que no hacen falta las variantes sin nombre.
     /// </summary>
     internal static class Messages
     {
@@ -314,16 +299,14 @@ internal static class InternalExtensions
         /// </summary>
         /// <param name="fieldName">Nombre del campo.</param>
         /// <returns>El mensaje.</returns>
-        internal static string Required(string? fieldName)
-            => string.IsNullOrWhiteSpace(fieldName) ? "El campo es requerido" : Format("El campo {0} es requerido", fieldName);
+        internal static string Required(string? fieldName) => Format("El campo {0} es requerido", fieldName);
 
         /// <summary>
         /// Mensaje de formato inválido.
         /// </summary>
         /// <param name="fieldName">Nombre del campo.</param>
         /// <returns>El mensaje.</returns>
-        internal static string InvalidFormat(string? fieldName)
-            => string.IsNullOrWhiteSpace(fieldName) ? "El campo tiene un formato inválido" : Format("El campo {0} tiene un formato inválido", fieldName);
+        internal static string InvalidFormat(string? fieldName) => Format("El campo {0} tiene un formato inválido", fieldName);
 
         /// <summary>
         /// Mensaje de número menor que el mínimo.
@@ -331,8 +314,7 @@ internal static class InternalExtensions
         /// <param name="min">Mínimo permitido.</param>
         /// <param name="fieldName">Nombre del campo.</param>
         /// <returns>El mensaje.</returns>
-        internal static string Less(long min, string? fieldName)
-            => string.IsNullOrWhiteSpace(fieldName) ? Format("El campo es menor a {0}", min) : Format("El campo {0} es menor que {1}", fieldName, min);
+        internal static string Less(long min, string? fieldName) => Format("El campo {0} es menor que {1}", fieldName, min);
 
         /// <summary>
         /// Mensaje de número fuera de rango.
@@ -341,8 +323,7 @@ internal static class InternalExtensions
         /// <param name="max">Máximo permitido.</param>
         /// <param name="fieldName">Nombre del campo.</param>
         /// <returns>El mensaje.</returns>
-        internal static string OutRange(long min, long max, string? fieldName)
-            => string.IsNullOrWhiteSpace(fieldName) ? Format("El campo es menor que {0} o mayor que {1}", min, max) : Format("El campo {0} es menor que {1} o mayor que {2}", fieldName, min, max);
+        internal static string OutRange(long min, long max, string? fieldName) => Format("El campo {0} es menor que {1} o mayor que {2}", fieldName, min, max);
 
         private static string Format(string format, params object?[] args) => string.Format(CultureInfo.CurrentCulture, format, args);
     }
