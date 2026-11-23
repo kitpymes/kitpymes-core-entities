@@ -68,7 +68,7 @@ public abstract class EntityBase<TKey> : IEquatable<EntityBase<TKey>>, IEntityBa
 ```
 
 - **Igualdad:** dos entidades son iguales si son del mismo tipo y tienen la misma clave. Con tipos distintos, `Equals` devuelve `false`. Una entidad sin clave (valor por defecto de `TKey`, p. ej. todavía sin guardar) sólo es igual a sí misma.
-- **Eventos de dominio:** son `INotification` de [Kitpymes.Core.Mediator.Abstractions](https://www.nuget.org/packages/Kitpymes.Core.Mediator.Abstractions/). Se publican uno a uno, en el orden en que se añadieron, con `IPublisher.PublishAsync` (que entrega cada evento a sus manejadores en orden y para en el primero que falla), y después se vacían con `ClearDomainEvents`.
+- **Eventos de dominio:** son `INotification` de [Kitpymes.Core.Mediator.Abstractions](https://www.nuget.org/packages/Kitpymes.Core.Mediator.Abstractions/). Se publican uno a uno, en el orden en que se añadieron, con `IPublisher.PublishAsync` (que entrega cada evento a sus manejadores en orden y para en el primero que falla), y se vacían con `ClearDomainEvents`.
 - `DomainEvents` lleva `[NotMapped]`: no es una columna.
 
 ```cs
@@ -87,17 +87,22 @@ public sealed class Pedido : EntityBaseGuid
     }
 }
 
-// Al guardar, en la misma transacción. Se recorre una copia (ToList): un manejador puede añadir eventos nuevos.
-foreach (var evento in pedido.DomainEvents.ToList())
+// Al guardar, en la misma transacción. Se vacía antes de publicar y se repite mientras queden eventos:
+// un manejador puede añadir eventos nuevos, que también se publican.
+while (pedido.DomainEvents.Count > 0)
 {
-    var resultado = await publisher.PublishAsync(evento, cancellationToken);
-    if (resultado.IsFailure)
+    var eventos = pedido.DomainEvents.ToList();
+    pedido.ClearDomainEvents();
+
+    foreach (var evento in eventos)
     {
-        return resultado;
+        var resultado = await publisher.PublishAsync(evento, cancellationToken);
+        if (resultado.IsFailure)
+        {
+            return resultado;
+        }
     }
 }
-
-pedido.ClearDomainEvents();
 ```
 
 ```cs
