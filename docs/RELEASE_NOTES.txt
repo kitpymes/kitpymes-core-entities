@@ -14,17 +14,46 @@ Versión mayor: rompe a quien venga de la 2.0.0. Abajo, qué cambia y cómo migr
    - DomainEvents, AddDomainEvent y RemoveDomainEvent usan Kitpymes.Core.Mediator.Abstractions.INotification. Cambie `using MediatR;` por `using Kitpymes.Core.Mediator.Abstractions;` en los eventos y publíquelos con IPublisher.PublishAsync, que devuelve Task<Result>.
    - AddDomainEvent(null) lanza ArgumentNullException (antes añadía un nulo).
    - DomainEvents lleva [NotMapped] en EntityBase; la interfaz IEntityBase ya no lo lleva (en una interfaz no tenía efecto).
+   - Antes y después:
+       // 2.0.0
+       using MediatR;
+       public sealed class PedidoCreado : INotification { }
+       await mediator.Publish(evento);                       // sin resultado; un fallo era una excepción
+
+       // 3.0.0
+       using Kitpymes.Core.Mediator.Abstractions;
+       public sealed class PedidoCreado : INotification { }
+       var resultado = await publisher.PublishAsync(evento, ct);   // Task<Result>; para en el primer manejador que falla
+       if (resultado.IsFailure) { return resultado; }        // ignorar el Result es error de compilación (KPY0003)
 
 2. Excepciones (cambio de comportamiento)
    - Donde se lanzaba SharedException ahora se lanza ArgumentNullException (valor nulo), ArgumentOutOfRangeException (número menor que el mínimo o fuera de rango) o ArgumentException (vacío o formato inválido). Todas heredan de ArgumentException: un catch (ArgumentException) las captura todas.
    - El texto es el mismo, y .NET le añade el nombre del argumento: "El campo street es requerido (Parameter 'street')".
    - Con ArgumentException también StatusEnum.ToEnum(string) y ToBool(string) con un estado que no existe, y TenantName con caracteres no permitidos.
 
-3. Igualdad de entidades
+3. Igualdad de entidades (cuidado: casi todo sigue compilando y cambia el resultado en silencio)
    - EntityBase<TKey> implementa IEquatable<EntityBase<TKey>> en vez de IEquatable<TKey>: desaparece Equals(TKey), y entidad.Equals(5) ya no compara con la clave. Compare las claves: entidad.Id == 5.
-   - Equals con una entidad (o un ValueObject) de otro tipo devuelve false en vez de lanzar una excepción.
+   - Equals con una entidad de otro tipo devuelve false en vez de lanzar SharedException.
    - Una entidad sin clave (valor por defecto de TKey, p. ej. un EntityBaseInt todavía sin guardar) sólo es igual a sí misma; antes dos entidades nuevas del mismo tipo eran iguales.
    - GetHashCode distingue mayúsculas en claves string, igual que Equals. Una entidad sin clave usa el hash de la instancia, que cambia cuando recibe la clave: no la meta en un HashSet o como clave de un diccionario antes de guardarla.
+   - Antes y después (Cliente y Proveedor heredan de EntityBaseInt):
+       var a = new Cliente();        // sin guardar: Id = 0
+       var b = new Cliente();        // sin guardar: Id = 0
+       var c = new Cliente(5);
+       var p = new Proveedor(5);
+
+                                                   2.0.0                  3.0.0
+       a == b                                      true                   false
+       a.Equals(a)                                 true                   true
+       new HashSet<Cliente> { a, b }.Count         1 (se pierde b)        2
+       diccionario[a] = x; diccionario[b] = y      una entrada (y pisa x) dos entradas
+       c == new Cliente(5)                         true                   true (sin cambios)
+       c.Equals(5)                                 true                   false (compila igual: Equals(object))
+       c.Equals(p)                                 SharedException        false
+       new List<IEntityBase> { c }.Contains(p)     SharedException        false
+
+   - Qué buscar en su código: comparaciones de entidades recién creadas (sin clave) que esperaban ser iguales, HashSet o Dictionary con entidades sin guardar, llamadas a Equals con un valor de clave (cámbielas por entidad.Id == valor), y catch (SharedException) alrededor de comparaciones entre tipos distintos.
+   - Lo mismo en ValueObjectBase: Equals con otro tipo de ValueObject devuelve false en vez de lanzar SharedException.
 
 4. Currency y Money
    - Currency.Default y Money.Default devuelven la moneda del país de la cultura actual (EUR con es-ES). Antes lanzaban siempre una excepción. Con una cultura sin país (la invariante, o "es") lanzan InvalidOperationException. Nuevo Currency.DefaultCode().
